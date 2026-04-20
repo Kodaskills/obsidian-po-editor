@@ -1,0 +1,373 @@
+/* PO Editor Plugin Styles */
+
+/* Settings Tab */
+.settings-section-header {
+    margin-top: 24px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--background-modifier-border);
+    color: var(--text-normal);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.about-section {
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--background-secondary);
+    border-radius: 4px;
+}
+
+.about-section p {
+    margin: 4px 0;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* Modal Styles */
+.modal-description {
+    margin-bottom: 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.convert-modal-form,
+.po-create-form,
+.po-import-form,
+.po-export-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-row label {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text-normal);
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+    padding: 8px 12px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    background: var(--background-primary);
+    color: var(--text-normal);
+    font-size: 14px;
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+    outline: none;
+    border-color: var(--interactive-accent);
+    box-shadow: 0 0 0 2px var(--interactive-accent-faint);
+}
+
+.form-row textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.button-row {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+/* Validation Output */
+.validation-success {
+    color: var(--text-success);
+}
+
+.validation-error {
+    color: var(--text-error);
+}
+
+.validation-output {
+    padding: 16px;
+    background: var(--background-secondary);
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 13px;
+    white-space: pre-wrap;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    background: var(--background-primary);
+    color: var(--text-normal);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s ease;
+}
+
+.btn:hover {
+    background: var(--background-secondary);
+}
+
+.btn-primary {
+    background: var(--interactive-accent);
+    border-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+}
+
+.btn-primary:hover {
+    background: var(--interactive-accent-hover);
+}
+
+/* Confirm Modal */
+.confirm-modal-message {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--text-normal);
+}
+
+.confirm-modal-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+/* PO Entry Highlighting (Editor) */
+.po-entry-msgid {
+    color: var(--text-success);
+    font-weight: 500;
+}
+
+.po-entry-msgstr {
+    color: var(--text-warning);
+}
+
+.po-entry-comment {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.po-entry-fuzzy {
+    background: rgba(255, 200, 0, 0.1);
+    border-left: 3px solid var(--text-warning);
+}
+
+/* View Styles */
+.po-view-container {
+    padding: 16px;
+}
+
+.po-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.po-stat-card {
+    padding: 16px;
+    background: var(--background-secondary);
+    border-radius: 6px;
+    text-align: center;
+}
+
+.po-stat-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-normal);
+}
+
+.po-stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.po-stat-card.translated .po-stat-value {
+    color: var(--text-success);
+}
+
+.po-stat-card.untranslated .po-stat-value {
+    color: var(--text-muted);
+}
+
+.po-stat-card.fuzzy .po-stat-value {
+    color: var(--text-warning);
+}
+
+/* Entry List */
+.po-entry-list {
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.po-entry-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 16px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--background-modifier-border);
+    align-items: start;
+}
+
+.po-entry-item:last-child {
+    border-bottom: none;
+}
+
+.po-entry-item:hover {
+    background: var(--background-secondary);
+}
+
+.po-entry-key {
+    font-family: monospace;
+    font-size: 13px;
+    word-break: break-all;
+}
+
+.po-entry-value {
+    font-family: monospace;
+    font-size: 13px;
+    word-break: break-all;
+}
+
+.po-entry-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Fuzzy Toggle */
+.po-fuzzy-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.po-fuzzy-toggle input {
+    cursor: pointer;
+}
+
+.po-fuzzy-toggle label {
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+/* Search/Filter */
+.po-search-container {
+    margin-bottom: 16px;
+}
+
+.po-search-input {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 6px;
+    background: var(--background-primary);
+    color: var(--text-normal);
+    font-size: 14px;
+}
+
+.po-search-input:focus {
+    outline: none;
+    border-color: var(--interactive-accent);
+}
+
+/* Filter Buttons */
+.po-filter-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.po-filter-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 16px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.po-filter-btn:hover {
+    background: var(--background-secondary);
+    color: var(--text-normal);
+}
+
+.po-filter-btn.active {
+    background: var(--interactive-accent);
+    border-color: var(--interactive-accent);
+    color: var(--text-on-accent);
+}
+
+/* Empty State */
+.po-empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-muted);
+}
+
+.po-empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.po-empty-state-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-normal);
+}
+
+.po-empty-state-description {
+    font-size: 14px;
+}
+
+/* Loading State */
+.po-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+}
+
+.po-loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--background-modifier-border);
+    border-top-color: var(--interactive-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .po-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .po-entry-item {
+        grid-template-columns: 1fr;
+    }
+}
