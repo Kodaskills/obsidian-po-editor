@@ -1,169 +1,134 @@
-import type { POEntry } from './POEntry';
-import { getPluralFormSpec, pluralFormsHeader } from './PluralForms';
+import { isPluralEntry, type POEntry, type POHeader } from "@domain/index";
 
 export interface POFile {
-    readonly charset: string;
-    readonly header: POHeader;
-    readonly entries: POEntry[];
-    readonly obsolete: POEntry[];
+  readonly charset: string;
+  readonly header: POHeader;
+  readonly entries: POEntry[];
+  readonly obsolete: POEntry[];
 }
-
-export interface POHeader {
-    readonly content: string;
-    readonly metadata: Record<string, string>;
-}
-
-export const PO_HEADER_FIELDS = [
-    'Project-Id-Version',
-    'Report-Msgid-Bugs-To',
-    'POT-Creation-Date',
-    'PO-Revision-Date',
-    'Last-Translator',
-    'Language-Team',
-    'Language',
-    'Content-Type',
-    'Content-Transfer-Encoding',
-    'Plural-Forms',
-    'MIME-Version',
-    'X-Generator'
-];
 
 export interface POStatistics {
-    total: number;
-    translated: number;
-    untranslated: number;
-    fuzzy: number;
-    obsolete: number;
-    wordCount: number;
-    charCount: number;
-    charCountNoSpaces: number;
-    translatedWordCount: number;
-    flags: Record<string, number>;
-    errors: number;
+  total: number;
+  translated: number;
+  untranslated: number;
+  fuzzy: number;
+  obsolete: number;
+  wordCount: number;
+  charCount: number;
+  charCountNoSpaces: number;
+  translatedWordCount: number;
+  flags: Record<string, number>;
+  errors: number;
+}
+
+function getMsgStrString(entry: POEntry): string {
+  if (isPluralEntry(entry)) {
+    return Array.isArray(entry.msgstr) ? entry.msgstr[0] || "" : "";
+  } else {
+    return entry.msgstr;
+  }
+}
+
+function getSourceText(entry: POEntry): string {
+  let text = entry.msgid;
+  if (isPluralEntry(entry)) {
+    text += ` ${entry.msgidPlural || ""}`;
+  }
+  return text;
+}
+
+function countText(t: string) {
+  return {
+    words: t
+      .trim()
+      .split(/\s+/)
+      .filter((w) => w.length > 0).length,
+    chars: t.length,
+    charsNoSpaces: t.replace(/\s/g, "").length,
+  };
 }
 
 export function getStatistics(file: POFile): POStatistics {
-    const stats: POStatistics = {
-        total: file.entries.length,
-        translated: 0,
-        untranslated: 0,
-        fuzzy: 0,
-        obsolete: file.obsolete.length,
-        wordCount: 0,
-        charCount: 0,
-        charCountNoSpaces: 0,
-        translatedWordCount: 0,
-        flags: {},
-        errors: 0
-    };
+  const stats: POStatistics = {
+    total: file.entries.length,
+    translated: 0,
+    untranslated: 0,
+    fuzzy: 0,
+    obsolete: file.obsolete.length,
+    wordCount: 0,
+    charCount: 0,
+    charCountNoSpaces: 0,
+    translatedWordCount: 0,
+    flags: {},
+    errors: 0,
+  };
 
-    for (const entry of file.entries) {
-        const countText = (t: string) => ({
-            words: t.trim().split(/\s+/).filter(w => w.length > 0).length,
-            chars: t.length,
-            charsNoSpaces: t.replace(/\s/g, '').length,
-        });
+  for (const entry of file.entries) {
+    const srcText = getSourceText(entry);
+    const srcCount = countText(srcText);
+    stats.wordCount += srcCount.words;
+    stats.charCount += srcCount.chars;
+    stats.charCountNoSpaces += srcCount.charsNoSpaces;
 
-        const src = countText(entry.msgid);
-        stats.wordCount += src.words;
-        stats.charCount += src.chars;
-        stats.charCountNoSpaces += src.charsNoSpaces;
-
-        if (entry.msgidPlural) {
-            const p = countText(entry.msgidPlural);
-            stats.wordCount += p.words;
-            stats.charCount += p.chars;
-            stats.charCountNoSpaces += p.charsNoSpaces;
-        }
-
-        if (entry.msgstr.trim() || (entry.msgstrPlural && entry.msgstrPlural.some(s => s.trim()))) {
-            stats.translated++;
-            stats.translatedWordCount += src.words;
-        } else {
-            stats.untranslated++;
-        }
-
-        // Count flags
-        entry.flags.forEach(flag => {
-            stats.flags[flag] = (stats.flags[flag] || 0) + 1;
-            if (flag === 'fuzzy') stats.fuzzy++;
-        });
-
-        // Simple error detection: empty msgid with content
-        if (!entry.msgid.trim() && (entry.msgstr.trim() || entry.msgctxt)) {
-            stats.errors++;
-        }
+    const targetText = getMsgStrString(entry);
+    const isTranslated = targetText.trim().length > 0;
+    if (isTranslated) {
+      stats.translated++;
+      stats.translatedWordCount += srcCount.words;
+    } else {
+      stats.untranslated++;
     }
 
-    return stats;
-}
-
-export function createPOFile(
-    targetLanguage: string,
-    sourceLanguage: string = 'en',
-    options?: { customMetadata?: Record<string, string> }
-): POFile {
-    const pluralSpec = getPluralFormSpec(targetLanguage);
-    const metadata: Record<string, string> = {
-        'Content-Type': 'text/plain; charset=UTF-8',
-        'Content-Transfer-Encoding': '8bit',
-        'Language': targetLanguage,
-        'Plural-Forms': pluralFormsHeader(pluralSpec),
-        'Project-Id-Version': '1.0.0',
-        'PO-Revision-Date': new Date().toISOString().replace(/:\d{3}$/, '+0000'),
-        'MIME-Version': '1.0',
-        'X-Generator': 'Obsidian PO Editor',
-    };
-
-    if (options?.customMetadata) {
-        Object.assign(metadata, options.customMetadata);
+    for (const flag of entry.flags || []) {
+      stats.flags[flag] = (stats.flags[flag] || 0) + 1;
+      if (flag === "fuzzy") stats.fuzzy++;
     }
 
-    return {
-        charset: 'utf-8',
-        header: { content: '', metadata },
-        entries: [],
-        obsolete: [],
-    };
+    if (!entry.msgid.trim() && (targetText.trim() || entry.msgctxt)) {
+      stats.errors++;
+    }
+  }
+  return stats;
 }
 
-export function parsePOHeader(headers: Record<string, string>): { content: string; metadata: Record<string, string> } {
-    return {
-        content: '',
-        metadata: headers,
-    };
-}
-
-export function createHeaderContent(metadata: Record<string, string>): string {
-    const lines = Object.entries(metadata).map(([key, value]) => `${key}: ${value}`);
-    return lines.join('\n');
+export function createPOFile(header: POHeader, charset = "UTF-8"): POFile {
+  return {
+    charset,
+    header,
+    entries: [],
+    obsolete: [],
+  };
 }
 
 export function findEntryByMsgid(file: POFile, msgid: string): POEntry | undefined {
-    return file.entries.find(e => e.msgid === msgid);
+  return file.entries.find((e) => e.msgid === msgid);
 }
 
 export function findObsoleteByMsgid(file: POFile, msgid: string): POEntry | undefined {
-    return file.obsolete.find(e => e.msgid === msgid);
+  return file.obsolete.find((e) => e.msgid === msgid);
 }
 
-export function addEntry(file: POFile, entry: POEntry): POFile {
-    return {
-        ...file,
-        entries: [...file.entries, entry],
-    };
+export function addEntryToFile(poFile: POFile, entry: POEntry): POFile {
+  return {
+    ...poFile,
+    entries: [...poFile.entries, entry],
+  };
 }
 
 export function removeEntry(file: POFile, msgid: string): POFile {
-    return {
-        ...file,
-        entries: file.entries.filter(e => e.msgid !== msgid),
-    };
+  return {
+    ...file,
+    entries: file.entries.filter((e) => e.msgid !== msgid),
+  };
 }
 
-export function updateEntry(file: POFile, msgid: string, updater: (entry: POEntry) => POEntry): POFile {
-    return {
-        ...file,
-        entries: file.entries.map(e => e.msgid === msgid ? updater(e) : e),
-    };
+export function updateEntry(
+  file: POFile,
+  msgid: string,
+  updater: (entry: POEntry) => POEntry,
+): POFile {
+  return {
+    ...file,
+    entries: file.entries.map((e) => (e.msgid === msgid ? updater(e) : e)),
+  };
 }

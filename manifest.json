@@ -1,16 +1,11 @@
 {
-    "id": "obsidian-po-editor",
-    "name": "PO Editor",
-    "version": "1.0.0",
-    "minAppVersion": "0.15.0",
-    "description": "Plugin for editing PO (Gettext) translation files with format conversion support (ICU, XLIFF, ARB, JSON, YAML)",
-    "author": "PO Editor Team",
-    "authorUrl": "",
-    "repoUrl": "",
-    "pricing": "optional",
-    "fundingUrl": "",
-    "mobilePlatforms": ["android", "ios"],
-    "desktopPlatforms": ["darwin", "linux", "win32"],
-    "category": "data",
-    "tags": ["translation", "gettext", "localization", "i18n", "po"]
+  "id": "po-editor",
+  "name": "PO Editor",
+  "version": "0.1.0",
+  "minAppVersion": "0.15.0",
+  "description": "Plugin for editing PO (Gettext) translation files with format conversion support (ICU, XLIFF, ARB, JSON, YAML)",
+  "author": "Kodaskills",
+  "authorUrl": "https://kodaskills.co",
+  "fundingUrl": "",
+  "isDesktopOnly": true
 }

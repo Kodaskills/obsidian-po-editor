@@ -1,42 +1,27 @@
-import { POFile, createPOFile } from '../../domain/entities/POFile';
+import { type POFile, type POHeader } from "@domain/index";
+
+export type CreatePOFileUseCase = (header: POHeader) => POFile;
 
 export interface CreatePOUseCaseInput {
-    targetLanguage: string;
-    sourceLanguage?: string;
-    customMetadata?: Record<string, string>;
+  header: POHeader;
+  createPOFile: CreatePOFileUseCase;
 }
 
 export interface CreatePOUseCaseOutput {
-    success: boolean;
-    poFile?: POFile;
-    error?: string;
+  success: boolean;
+  poFile?: POFile;
+  error?: Error;
 }
 
 export class CreatePOUseCase {
-    execute(input: CreatePOUseCaseInput): CreatePOUseCaseOutput {
-        try {
-            if (!input.targetLanguage || input.targetLanguage.trim() === '') {
-                return {
-                    success: false,
-                    error: 'Target language is required',
-                };
-            }
-            
-            const poFile = createPOFile(
-                input.targetLanguage,
-                input.sourceLanguage,
-                { customMetadata: input.customMetadata }
-            );
-            
-            return {
-                success: true,
-                poFile,
-            };
-        } catch (error) {
-            return {
-                success: false,
-                error: error instanceof Error ? error.message : 'Unknown error creating PO file',
-            };
-        }
+  execute(input: CreatePOUseCaseInput): CreatePOUseCaseOutput {
+    try {
+      const { createPOFile, header } = input;
+      const poFile = createPOFile(header);
+      return { success: true, poFile };
+    } catch (caught) {
+      const error = caught instanceof Error ? caught : new Error(String(caught));
+      return { success: false, error };
     }
+  }
 }

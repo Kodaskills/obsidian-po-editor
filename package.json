@@ -1,37 +1,49 @@
 {
-    "name": "obsidian-po-editor",
-    "version": "0.1.0",
-    "description": "Plugin for editing PO (Gettext) translation files with format conversion support",
-    "main": "main.js",
-    "scripts": {
-        "build": "node esbuild.config.mjs",
-        "dev": "bun --watch run esbuild.config.mjs",
-        "package": "npm run build && rm -f release.zip && zip -r release.zip manifest.json main.js styles.css",
-        "test": "vitest",
-        "test:run": "vitest run",
-        "test:coverage": "vitest run --coverage"
-    },
-    "keywords": [
-        "obsidian-plugin",
-        "gettext",
-        "po",
-        "translation",
-        "i18n"
-    ],
-    "author": "Kodaskills",
-    "license": "MIT",
-    "devDependencies": {
-        "@types/js-yaml": "^4.0.9",
-        "@types/node": "^16.18.0",
-        "esbuild": "^0.24.0",
-        "typescript": "^5.3.0",
-        "vitest": "^4.1.5"
-    },
-    "dependencies": {
-        "@formatjs/icu-messageformat-parser": "^3.5.0",
-        "arb-convert": "^1.2.1",
-        "gettext-parser": "^9.0.0",
-        "js-yaml": "^4.1.0",
-        "obsidian": "^1.12.3"
-    }
+  "name": "obsidian-po-editor",
+  "version": "0.1.0",
+  "description": "Plugin for editing PO (Gettext) translation files with format conversion support",
+  "keywords": [
+    "gettext",
+    "i18n",
+    "obsidian-plugin",
+    "po",
+    "translation"
+  ],
+  "license": "MIT",
+  "author": "Kodaskills",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "build": "vp build",
+    "dev": "vp dev",
+    "package": "vp package",
+    "test": "vp test",
+    "test:run": "vp test run",
+    "test:coverage": "vp test run --coverage",
+    "lint": "vp lint",
+    "lint:fix": "vp lint --fix",
+    "fmt": "vp fmt --check",
+    "fmt:fix": "vp fmt --write",
+    "check": "vp check",
+    "check:fix": "vp check --fix",
+    "prepare": "vp config"
+  },
+  "dependencies": {
+    "@codemirror/language": "^6.12.3",
+    "@formatjs/icu-messageformat-parser": "^3.5.0",
+    "arb-convert": "^1.2.1",
+    "gettext-parser": "^9.0.0",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@codemirror/commands": "^6.10.3",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^25.6.0",
+    "@vitest/coverage-v8": "4.1.5",
+    "obsidian": "^1.12.3",
+    "typescript": "^6.0.3",
+    "vite-plus": "^0.1.19",
+    "vitest": "^4.1.5"
+  },
+  "packageManager": "bun@1.3.11"
 }

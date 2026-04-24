@@ -1,0 +1,34 @@
+import { FuzzySuggestModal, TFolder } from "obsidian";
+
+export class FolderPickerModal extends FuzzySuggestModal<TFolder> {
+  private resolvePromise: ((value: TFolder | null) => void) | null = null;
+
+  getItems(): TFolder[] {
+    return this.app.vault.getAllLoadedFiles().filter((f): f is TFolder => f instanceof TFolder);
+  }
+
+  getItemText(item: TFolder): string {
+    return item.path;
+  }
+
+  onChooseItem(item: TFolder): void {
+    if (this.resolvePromise) {
+      this.resolvePromise(item);
+      this.resolvePromise = null;
+    }
+  }
+
+  onClose(): void {
+    if (this.resolvePromise) {
+      this.resolvePromise(null);
+      this.resolvePromise = null;
+    }
+  }
+
+  async pickDirectory(): Promise<TFolder | null> {
+    return new Promise((resolve) => {
+      this.resolvePromise = resolve;
+      this.open();
+    });
+  }
+}

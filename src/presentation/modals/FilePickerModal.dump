@@ -1,0 +1,51 @@
+import { type App, FuzzySuggestModal, type TFolder, type TFile } from "obsidian";
+
+export class FilePickerModal extends FuzzySuggestModal<TFile> {
+  private resolvePromise: ((value: TFile | null) => void) | null = null;
+
+  constructor(
+    app: App,
+    private title?: string,
+    private folder?: TFolder,
+  ) {
+    super(app);
+  }
+
+  getItems(): TFile[] {
+    const allFiles = this.app.vault.getFiles();
+    return allFiles.filter((file) => {
+      const isPo = file.extension === "po" || file.extension === "pot";
+      if (!isPo) return false;
+      if (this.folder) return file.path.startsWith(this.folder.path + "/");
+      return true;
+    });
+  }
+
+  getItemText(item: TFile): string {
+    return item.path;
+  }
+
+  onChooseItem(item: TFile): void {
+    if (this.resolvePromise) {
+      this.resolvePromise(item);
+      this.resolvePromise = null;
+    }
+  }
+
+  onClose(): void {
+    if (this.resolvePromise) {
+      this.resolvePromise(null);
+      this.resolvePromise = null;
+    }
+  }
+
+  async pickFile(): Promise<TFile | null> {
+    return new Promise((resolve) => {
+      this.resolvePromise = resolve;
+      if (this.title) {
+        this.setPlaceholder(this.title);
+      }
+      this.open();
+    });
+  }
+}

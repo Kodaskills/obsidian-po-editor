@@ -1,121 +1,124 @@
-import type { POFile } from '../../domain/entities/POFile';
-import type { POEntry } from '../../domain/entities/POEntry';
-import type { TranslationConverter } from '../../domain/interfaces/TranslationConverter';
+import {
+  createPOHeader,
+  createSingularEntry,
+  type POEntry,
+  type POFile,
+  type TranslationConverter,
+} from "@domain/index";
 
 export class XLIFFConverter implements TranslationConverter {
-    readonly format: 'xliff' = 'xliff';
-    readonly displayName: string = 'XLIFF';
-    readonly supportedExtensions: string[] = ['.xliff', '.xlf'];
+  readonly format = "xliff" as const;
+  readonly displayName: string = "XLIFF";
+  readonly supportedExtensions: string[] = [".xliff", ".xlf"];
+  readonly supportsPlurals = false;
+  readonly supportsFuzzyFlags = true;
 
-    parse(content: string): POFile {
-        const entries: POEntry[] = [];
-        const sourceLang = this.extractAttr(content, 'source-language') || 'en';
-        const targetLang = this.extractAttr(content, 'target-language') || 'und';
+  parse(content: string): POFile {
+    const entries: POEntry[] = [];
+    const targetLang = this.extractAttr(content, "target-language") || "und";
 
-        const unitRegex = /<trans-unit[^>]*id="([^"]*)"[^>]*>([\s\S]*?)<\/trans-unit>/g;
-        let match: RegExpExecArray | null;
+    const unitRegex = /<trans-unit[^>]*id="([^"]*)"[^>]*>([\s\S]*?)<\/trans-unit>/g;
 
-        while ((match = unitRegex.exec(content)) !== null) {
-            const unitContent = match[2];
-            const source = this.extractTag(unitContent, 'source');
-            const target = this.extractTag(unitContent, 'target');
-            const note = this.extractTag(unitContent, 'note');
-            const state = this.extractAttr(unitContent, 'state') || 'new';
-            const isFuzzy = state === 'needs-adaptation' || state === 'needs-review-translation';
+    let match: RegExpExecArray | null = unitRegex.exec(content);
 
-            if (source) {
-                entries.push({
-                    msgid: this.unescapeXml(source),
-                    msgstr: target ? this.unescapeXml(target) : '',
-                    comments: note ? { translator: this.unescapeXml(note) } : {},
-                    flags: isFuzzy ? ['fuzzy'] : [],
-                    obsolete: false,
-                    msgidPlural: undefined,
-                    msgstrPlural: [],
-                });
-            }
-        }
+    while (match !== null) {
+      const unitContent = match[2];
+      const source = this.extractTag(unitContent, "source");
+      const target = this.extractTag(unitContent, "target");
+      const note = this.extractTag(unitContent, "note");
+      const state = this.extractAttr(unitContent, "state") || "new";
+      const isFuzzy = state === "needs-adaptation" || state === "needs-review-translation";
 
-        return {
-            charset: 'utf-8',
-            header: {
-                content: '',
-                metadata: {
-                    'Language': targetLang,
-                    'X-Source-Language': sourceLang,
-                    'Content-Type': 'text/plain; charset=UTF-8',
-                    'X-Generator': 'Obsidian PO Editor',
-                },
-            },
-            entries,
-            obsolete: [],
-        };
+      if (source) {
+        entries.push(
+          createSingularEntry(this.unescapeXml(source), target ? this.unescapeXml(target) : "", {
+            comments: note ? { translator: this.unescapeXml(note) } : {},
+            flags: isFuzzy ? ["fuzzy"] : [],
+          }),
+        );
+      }
+
+      match = unitRegex.exec(content);
     }
 
-    compile(poFile: POFile): string {
-        const targetLang = poFile.header.metadata['Language'] || 'und';
-        const sourceLang = poFile.header.metadata['X-Source-Language'] || 'en';
+    const header = createPOHeader(targetLang, {
+      contentType: "text/plain; charset=UTF-8",
+      xGenerator: "Obsidian PO Editor",
+    });
 
-        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-        xml += `<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">\n`;
-        xml += `  <file original="messages" source-language="${sourceLang}" target-language="${targetLang}" datatype="plaintext">\n`;
-        xml += `    <body>\n`;
+    return {
+      charset: "utf-8",
+      header,
+      entries,
+      obsolete: [],
+    };
+  }
 
-        for (const entry of poFile.entries) {
-            const id = this.escapeXml(entry.msgid);
-            const source = this.escapeXml(entry.msgid);
-            const target = this.escapeXml(entry.msgstr);
-            const state = entry.flags.includes('fuzzy') ? 'needs-adaptation' : 'final';
+  compile(poFile: POFile): string {
+    const targetLang = poFile.header.language || "und";
+    const sourceLang = "en";
 
-            xml += `      <trans-unit id="${id}">\n`;
-            xml += `        <source>${source}</source>\n`;
-            xml += `        <target state="${state}">${target}</target>\n`;
-            if (entry.comments.translator) {
-                xml += `        <note>${this.escapeXml(entry.comments.translator)}</note>\n`;
-            }
-            xml += `      </trans-unit>\n`;
-        }
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    xml += `<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">\n`;
+    xml += `  <file original="messages" source-language="${sourceLang}" target-language="${targetLang}" datatype="plaintext">\n`;
+    xml += `    <body>\n`;
 
-        xml += `    </body>\n`;
-        xml += `  </file>\n`;
-        xml += `</xliff>\n`;
+    for (const entry of poFile.entries) {
+      const id = this.escapeXml(entry.msgid);
+      const source = this.escapeXml(entry.msgid);
+      const msgstr = Array.isArray(entry.msgstr) ? entry.msgstr[0] || "" : entry.msgstr;
+      const target = this.escapeXml(msgstr);
+      const state = (entry.flags ?? []).includes("fuzzy") ? "needs-adaptation" : "final";
 
-        return xml;
+      xml += `      <trans-unit id="${id}">\n`;
+      xml += `        <source>${source}</source>\n`;
+      xml += `        <target state="${state}">${target}</target>\n`;
+      if (entry.comments?.translator) {
+        xml += `        <note>${this.escapeXml(entry.comments.translator)}</note>\n`;
+      }
+      xml += `      </trans-unit>\n`;
     }
 
-    private extractTag(content: string, tag: string): string | undefined {
-        const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, 'i');
-        const match = regex.exec(content);
-        return match ? match[1] : undefined;
-    }
+    xml += `    </body>\n`;
+    xml += `  </file>\n`;
+    xml += `</xliff>\n`;
 
-    private extractAttr(content: string, attr: string): string | undefined {
-        const regex = new RegExp(`${attr}="([^"]*)"`, 'i');
-        const match = regex.exec(content);
-        return match ? match[1] : undefined;
-    }
+    return xml;
+  }
 
-    private escapeXml(str: string): string {
-        return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&apos;');
-    }
+  private extractTag(content: string, tag: string): string | undefined {
+    const regex = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)<\\/${tag}>`, "i");
+    const match = regex.exec(content);
+    return match ? match[1] : undefined;
+  }
 
-    private unescapeXml(str: string): string {
-        return str
-            .replace(/&apos;/g, "'")
-            .replace(/&quot;/g, '"')
-            .replace(/&gt;/g, '>')
-            .replace(/&lt;/g, '<')
-            .replace(/&amp;/g, '&');
-    }
+  private extractAttr(content: string, attr: string): string | undefined {
+    const regex = new RegExp(`${attr}="([^"]*)"`, "i");
+    const match = regex.exec(content);
+    return match ? match[1] : undefined;
+  }
+
+  private escapeXml(str: string): string {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&apos;");
+  }
+
+  private unescapeXml(str: string): string {
+    return str
+      .replace(/&apos;/g, "'")
+      .replace(/&quot;/g, '"')
+      .replace(/&gt;/g, ">")
+      .replace(/&lt;/g, "<")
+      .replace(/&amp;/g, "&");
+  }
 }
 
 export function createXLIFFConverter(): XLIFFConverter {
-    return new XLIFFConverter();
+  return new XLIFFConverter();
 }
 
 export const xliffConverter = createXLIFFConverter();

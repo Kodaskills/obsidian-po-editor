@@ -1,89 +1,90 @@
-import { describe, it, expect } from 'vitest';
-import { yamlConverter } from '../JsonYamlConverter';
+import { describe, expect, it } from "vite-plus/test";
+
+import { yamlConverter } from "../JsonYamlConverter";
 
 // ===== DONNÉES LOCALES POUR CE FICHIER =====
 
 const parseTestCases = [
-    {
-        name: 'simple YAML key-value',
-        input: `hello: Bonjour
+  {
+    name: "simple YAML key-value",
+    input: `hello: Bonjour
 goodbye: Au revoir`,
-        check: (result: any) => {
-            expect(result.entries).toHaveLength(2);
-            expect(result.entries.find((e: any) => e.msgid === 'hello')?.msgstr).toBe('Bonjour');
-        },
+    check: (result: any) => {
+      expect(result.entries).toHaveLength(2);
+      expect(result.entries.find((e: any) => e.msgid === "hello")?.msgstr).toBe("Bonjour");
     },
-    {
-        name: 'nested YAML',
-        input: `greeting:
+  },
+  {
+    name: "nested YAML",
+    input: `greeting:
   hello: Bonjour
   goodbye: Au revoir`,
-        check: (result: any) => {
-            expect(result.entries).toHaveLength(2);
-            expect(result.entries.find((e: any) => e.msgid === 'greeting.hello')?.msgstr).toBe('Bonjour');
-        },
+    check: (result: any) => {
+      expect(result.entries).toHaveLength(2);
+      expect(result.entries.find((e: any) => e.msgid === "greeting.hello")?.msgstr).toBe("Bonjour");
     },
-    {
-        name: 'YAML with quoted strings',
-        input: `message: "Hello World"
+  },
+  {
+    name: "YAML with quoted strings",
+    input: `message: "Hello World"
 `,
-        check: (result: any) => {
-            expect(result.entries[0].msgstr).toBe('Hello World');
-        },
+    check: (result: any) => {
+      expect(result.entries[0].msgstr).toBe("Hello World");
     },
+  },
 ];
 
 const compileTestCases = [
-    {
-        name: 'simple entries to YAML',
-        input: {
-            entries: [
-                { msgid: 'hello', msgstr: 'Bonjour', flags: [], comments: {}, obsolete: false },
-                { msgid: 'goodbye', msgstr: 'Au revoir', flags: [], comments: {}, obsolete: false },
-            ],
-        },
-        check: (result: string) => {
-            expect(result).toContain('hello: Bonjour');
-            expect(result).toContain('goodbye: Au revoir');
-        },
+  {
+    name: "simple entries to YAML",
+    input: {
+      entries: [
+        { msgid: "hello", msgstr: "Bonjour", flags: [], comments: {}, obsolete: false },
+        { msgid: "goodbye", msgstr: "Au revoir", flags: [], comments: {}, obsolete: false },
+      ],
     },
-    {
-        name: 'nested entries to YAML',
-        input: {
-            entries: [
-                { msgid: 'greeting.hello', msgstr: 'Bonjour', flags: [], comments: {}, obsolete: false },
-            ],
-        },
-        check: (result: string) => {
-            expect(result).toContain('greeting:');
-            expect(result).toContain('hello: Bonjour');
-        },
+    check: (result: string) => {
+      expect(result).toContain("hello: Bonjour");
+      expect(result).toContain("goodbye: Au revoir");
     },
-    {
-        name: 'empty entries returns empty object',
-        input: { entries: [] },
-        check: (result: string) => {
-            expect(result.trim()).toBe('{}');
-        },
+  },
+  {
+    name: "nested entries to YAML",
+    input: {
+      entries: [
+        { msgid: "greeting.hello", msgstr: "Bonjour", flags: [], comments: {}, obsolete: false },
+      ],
     },
+    check: (result: string) => {
+      expect(result).toContain("greeting:");
+      expect(result).toContain("hello: Bonjour");
+    },
+  },
+  {
+    name: "empty entries returns empty object",
+    input: { entries: [] },
+    check: (result: string) => {
+      expect(result.trim()).toBe("{}");
+    },
+  },
 ];
 
 // ===== TESTS =====
 
-describe('YamlConverter.parse', () => {
-    parseTestCases.forEach(({ name, input, check }) => {
-        it(name, () => {
-            const result = yamlConverter.parse(input);
-            check(result);
-        });
+describe("YamlConverter.parse", () => {
+  parseTestCases.forEach(({ name, input, check }) => {
+    it(name, () => {
+      const result = yamlConverter.parse(input);
+      check(result);
     });
+  });
 });
 
-describe('YamlConverter.compile', () => {
-    compileTestCases.forEach(({ name, input, check }) => {
-        it(name, () => {
-            const result = yamlConverter.compile(input as any);
-            check(result);
-        });
+describe("YamlConverter.compile", () => {
+  compileTestCases.forEach(({ name, input, check }) => {
+    it(name, () => {
+      const result = yamlConverter.compile(input as any);
+      check(result);
     });
+  });
 });
