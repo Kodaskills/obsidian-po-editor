@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+            font-size: 16px;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #444444; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#c9c4d8",
+                        "surface-container": "#201e28",
+                        "tertiary-container": "#d57a1e",
+                        "surface-tint": "#c9bfff",
+                        "primary-fixed-dim": "#c9bfff",
+                        "on-primary-container": "#28008a",
+                        "tertiary-fixed": "#ffdcc3",
+                        "on-error": "#690005",
+                        "tertiary": "#ffb77d",
+                        "outline": "#928ea1",
+                        "on-tertiary-fixed": "#2f1500",
+                        "on-surface": "#e5e0ee",
+                        "on-primary-fixed-variant": "#441cc8",
+                        "on-primary-fixed": "#1a0063",
+                        "surface-container-highest": "#35333e",
+                        "inverse-on-surface": "#312f39",
+                        "secondary": "#c8c6c5",
+                        "on-secondary": "#303030",
+                        "primary": "#c9bfff",
+                        "surface-variant": "#35333e",
+                        "on-tertiary-container": "#432100",
+                        "on-tertiary-fixed-variant": "#6e3900",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "secondary-container": "#474746",
+                        "outline-variant": "#484555",
+                        "on-secondary-fixed-variant": "#474746",
+                        "inverse-surface": "#e5e0ee",
+                        "inverse-primary": "#5d3fe0",
+                        "primary-container": "#917eff",
+                        "on-secondary-fixed": "#1b1b1c",
+                        "error-container": "#93000a",
+                        "primary-fixed": "#e5deff",
+                        "on-background": "#e5e0ee",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#1c1a24",
+                        "on-secondary-container": "#b7b5b4",
+                        "surface-dim": "#14121b",
+                        "surface-bright": "#3a3842",
+                        "on-tertiary": "#4d2600",
+                        "on-primary": "#2e009c",
+                        "background": "#14121b",
+                        "surface-container-lowest": "#0e0d16",
+                        "tertiary-fixed-dim": "#ffb77d",
+                        "surface": "#14121b",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed": "#e5e2e1",
+                        "surface-container-high": "#2b2932"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "mono-label": ["SF Mono, Menlo, monospace"],
+                        "heading-sm": ["Inter"],
+                        "body-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["13px", {"lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "mono-label": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "400"}],
+                        "heading-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-zinc-950 text-on-surface font-body-md selection:bg-primary-container/30 overflow-hidden h-screen flex flex-col">
+<!-- TopNavBar Shell -->
+<header class="flex justify-between items-center px-4 h-10 w-full bg-zinc-950 border-b border-[#333333] z-50">
+<div class="flex items-center gap-6">
+<span class="text-sm font-bold text-zinc-100 tracking-tighter uppercase font-heading-sm">Linguist IDE</span>
+<nav class="flex gap-4 h-full items-center">
+<a class="text-[#7b61ff] border-b-2 border-[#7b61ff] h-10 flex items-center font-['Inter'] text-xs font-medium tracking-tight" href="#">Project</a>
+<a class="text-zinc-500 hover:text-zinc-300 h-10 flex items-center font-['Inter'] text-xs font-medium tracking-tight transition-colors" href="#">Languages</a>
+<a class="text-zinc-500 hover:text-zinc-300 h-10 flex items-center font-['Inter'] text-xs font-medium tracking-tight transition-colors" href="#">Statistics</a>
+<a class="text-zinc-500 hover:text-zinc-300 h-10 flex items-center font-['Inter'] text-xs font-medium tracking-tight transition-colors" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1.5 mr-4 bg-zinc-900/50 px-2 py-0.5 rounded border border-[#333333]">
+<span class="text-[10px] text-zinc-500 font-mono-label">Project Mode</span>
+<div class="w-6 h-3 bg-[#7b61ff] rounded-full relative cursor-pointer">
+<div class="absolute right-0.5 top-0.5 w-2 h-2 bg-white rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center gap-1 border-r border-[#333333] pr-3 mr-2">
+<button class="p-1.5 hover:bg-zinc-800/40 transition-all rounded active:scale-95 text-zinc-400">
+<span class="material-symbols-outlined">ios_share</span>
+</button>
+<button class="p-1.5 hover:bg-zinc-800/40 transition-all rounded active:scale-95 text-zinc-400">
+<span class="material-symbols-outlined">code</span>
+</button>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 bg-[#7b61ff] text-white px-3 py-1 rounded text-xs font-medium active:opacity-80 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span>Entry</span>
+</button>
+<button class="p-1.5 hover:bg-zinc-800/40 transition-all rounded active:scale-95 text-[#7b61ff]">
+<span class="material-symbols-outlined">sync</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar Shell -->
+<aside class="flex flex-col h-full w-48 bg-zinc-950 border-r border-[#333333]">
+<div class="p-4 border-b border-[#333333] mb-2">
+<div class="flex items-center gap-2">
+<div class="w-5 h-5 bg-[#2a2a2a] rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-[#7b61ff]">terminal</span>
+</div>
+<div>
+<div class="text-zinc-200 font-semibold font-['Inter'] text-[11px] leading-tight">Project Alpha</div>
+<div class="text-zinc-500 font-['Inter'] text-[10px] leading-tight">v1.2.0-stable</div>
+</div>
+</div>
+<button class="mt-4 w-full border border-[#333333] text-zinc-300 hover:bg-zinc-900/50 py-1.5 rounded font-['Inter'] text-[11px] transition-all active:scale-95">New Branch</button>
+</div>
+<nav class="flex-1 space-y-0.5">
+<div class="bg-[#2a2a2a] text-white border-l-2 border-[#7b61ff] px-3 py-1.5 flex items-center gap-2 cursor-pointer font-['Inter'] text-[11px]">
+<span class="material-symbols-outlined">book</span>
+<span>Dictionary</span>
+</div>
+<div class="text-zinc-500 hover:bg-zinc-900/50 px-3 py-1.5 flex items-center gap-2 cursor-pointer font-['Inter'] text-[11px] transition-all">
+<span class="material-symbols-outlined">segment</span>
+<span>Segments</span>
+</div>
+<div class="text-zinc-500 hover:bg-zinc-900/50 px-3 py-1.5 flex items-center gap-2 cursor-pointer font-['Inter'] text-[11px] transition-all">
+<span class="material-symbols-outlined">variables</span>
+<span>Variables</span>
+</div>
+<div class="text-zinc-500 hover:bg-zinc-900/50 px-3 py-1.5 flex items-center gap-2 cursor-pointer font-['Inter'] text-[11px] transition-all">
+<span class="material-symbols-outlined">history</span>
+<span>History</span>
+</div>
+<div class="text-zinc-500 hover:bg-zinc-900/50 px-3 py-1.5 flex items-center gap-2 cursor-pointer font-['Inter'] text-[11px] transition-all">
+<span class="material-symbols-outlined">menu_book</span>
+<span>Glossary</span>
+</div>
+</nav>
+<div class="p-2 border-t border-[#333333] space-y-0.5">
+<div class="text-zinc-500 hover:bg-zinc-900/50 px-3 py-1.5 flex items-center gap-2 cursor-pointer font-['Inter'] text-[11px]">
+<span class="material-symbols-outlined">help_outline</span>
+<span>Help</span>
+</div>
+<div class="text-zinc-500 hover:bg-zinc-900/50 px-3 py-1.5 flex items-center gap-2 cursor-pointer font-['Inter'] text-[11px]">
+<span class="material-symbols-outlined">terminal</span>
+<span>Logs</span>
+</div>
+</div>
+</aside>
+<!-- Main Workspace -->
+<main class="flex-1 flex flex-col bg-zinc-900/20 overflow-hidden">
+<!-- Global Statistics Bar -->
+<section class="grid grid-cols-4 gap-4 p-4 border-b border-[#333333] bg-zinc-950/40">
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end">
+<span class="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">Overall Progress</span>
+<span class="text-xs font-mono-label text-[#7b61ff]">84.2%</span>
+</div>
+<div class="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+<div class="h-full bg-[#7b61ff] w-[84.2%]"></div>
+</div>
+</div>
+<div class="flex flex-col border-l border-[#333333] pl-4">
+<span class="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">Total Keys</span>
+<span class="text-lg font-mono-label text-zinc-100">12,840</span>
+</div>
+<div class="flex flex-col border-l border-[#333333] pl-4">
+<span class="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">Total Words</span>
+<span class="text-lg font-mono-label text-zinc-100">452,192</span>
+</div>
+<div class="flex flex-col border-l border-[#333333] pl-4">
+<span class="text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">Char Count</span>
+<span class="text-lg font-mono-label text-zinc-100">2.1M</span>
+</div>
+</section>
+<!-- Translation Toolbar -->
+<div class="h-9 px-4 flex items-center justify-between border-b border-[#333333] bg-zinc-900/20">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-zinc-400">
+<span class="material-symbols-outlined text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-xs w-48 placeholder-zinc-600" placeholder="Filter keys..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-1.5 text-zinc-400 hover:text-zinc-200 text-[11px]">
+<span class="material-symbols-outlined">filter_list</span>
+<span>Filter</span>
+</button>
+<div class="h-4 w-px bg-zinc-800"></div>
+<button class="flex items-center gap-1.5 text-zinc-400 hover:text-zinc-200 text-[11px]">
+<span class="material-symbols-outlined">file_download</span>
+<span>Export</span>
+</button>
+</div>
+</div>
+<!-- Translation Grid -->
+<div class="flex-1 overflow-auto">
+<table class="w-full border-collapse text-left">
+<thead class="sticky top-0 bg-zinc-950 z-10 border-b border-[#333333]">
+<tr class="divide-x divide-[#333333]">
+<th class="w-12 px-2 py-3 bg-zinc-950"></th>
+<th class="w-64 px-4 py-3 font-mono-label text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">Translation Key</th>
+<th class="min-w-[300px] px-4 py-3">
+<div class="flex flex-col">
+<div class="flex justify-between items-center mb-1">
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-bold text-zinc-100 uppercase tracking-widest">English (US)</span>
+<span class="bg-zinc-800 text-[9px] px-1.5 py-0.5 rounded text-zinc-400">Source</span>
+</div>
+<span class="material-symbols-outlined text-zinc-600 hover:text-zinc-400 cursor-pointer">info</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1 bg-zinc-800 rounded-full">
+<div class="h-full bg-zinc-400 w-full"></div>
+</div>
+<span class="text-[9px] text-zinc-500 font-mono-label">100% (0 left)</span>
+</div>
+</div>
+</th>
+<th class="min-w-[300px] px-4 py-3">
+<div class="flex flex-col">
+<div class="flex justify-between items-center mb-1">
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-bold text-zinc-100 uppercase tracking-widest">German (DE)</span>
+</div>
+<span class="material-symbols-outlined text-zinc-600 hover:text-zinc-400 cursor-pointer">info</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1 bg-zinc-800 rounded-full">
+<div class="h-full bg-[#7b61ff] w-[92%]"></div>
+</div>
+<span class="text-[9px] text-zinc-500 font-mono-label">92% (12 left)</span>
+</div>
+</div>
+</th>
+<th class="min-w-[300px] px-4 py-3">
+<div class="flex flex-col">
+<div class="flex justify-between items-center mb-1">
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-bold text-zinc-100 uppercase tracking-widest">French (FR)</span>
+</div>
+<span class="material-symbols-outlined text-zinc-600 hover:text-zinc-400 cursor-pointer">info</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1 bg-zinc-800 rounded-full">
+<div class="h-full bg-[#7b61ff] w-[45%]"></div>
+</div>
+<span class="text-[9px] text-zinc-500 font-mono-label">45% (208 left)</span>
+</div>
+</div>
+</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#333333]">
+<!-- Row 1: Active -->
+<tr class="divide-x divide-[#333333] hover:bg-zinc-800/20 bg-[#2a2a2a]/40 group border-l-2 border-l-[#7b61ff]">
+<td class="px-2 py-2 text-center">
+<span class="material-symbols-outlined text-zinc-600 group-hover:text-zinc-400 cursor-grab">drag_indicator</span>
+</td>
+<td class="px-4 py-2 font-mono-label text-[11px] text-[#7b61ff]">common.actions.save_changes</td>
+<td class="px-4 py-2 align-top text-xs leading-relaxed text-zinc-200">Save Changes</td>
+<td class="px-4 py-2 align-top text-xs leading-relaxed text-zinc-200">Änderungen speichern</td>
+<td class="px-4 py-2 align-top text-xs leading-relaxed">
+<div class="bg-zinc-800/50 p-2 rounded border border-dashed border-[#444444] text-zinc-500 flex justify-between items-center italic">
+<span>Untranslated...</span>
+<span class="material-symbols-outlined text-[14px]">edit</span>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="divide-x divide-[#333333] hover:bg-zinc-800/20 group">
+<td class="px-2 py-2 text-center">
+<span class="material-symbols-outlined text-zinc-600 group-hover:text-zinc-400 cursor-grab">drag_indicator</span>
+</td>
+<td class="px-4 py-2 font-mono-label text-[11px] text-zinc-400">auth.login.forgot_password</td>
+<td class="px-4 py-2 align-top text-xs leading-relaxed text-zinc-200">Forgot your password?</td>
+<td class="px-4 py-2 align-top text-xs leading-relaxed text-zinc-200">Passwort vergessen?</td>
+<td class="px-4 py-2 align-top text-xs leading-relaxed text-zinc-200">Mot de passe oublié ?</td>
+</tr>
+<!-- Row 3 -->
+<tr class="divide-x divide-[#333333] hover:bg-zinc-800/20 group bg-zinc-950/20">
+<td class="px-2 py-2 text-center">
+<span class="material-symbols-outlined text-zinc-600 group-hover:text-zinc-400 cursor-grab">drag_indicator</span>
+</td>
+<td class="px-4 py-2 font-mono-label text-[11px] text-zinc-400">ui.dashboard.welcome_back</td>
+<td class="px-4 py-2 align-top text-xs leading-relaxed text-zinc-200">Welcome back, {user}!</td>
+<td class="px-4 py-2 align-top text-xs leading-relaxed text-zinc-200">Willkommen zurück, {user}!</td>
+<td class="px-4 py-2 align-top text-xs leading-relaxed">
+<div class="flex items-center gap-1.5 px-2 py-1 rounded bg-[#d57a1e]/10 text-[#ffb77d] border border-[#d57a1e]/20 w-fit text-[10px]">
+<span class="material-symbols-outlined text-[12px]">warning</span>
+<span>Variable mismatch</span>
+</div>
+<div class="mt-1 text-xs text-zinc-200">Bienvenue, {user}!</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="divide-x divide-[#333333] hover:bg-zinc-800/20 group">
+<td class="px-2 py-2 text-center">
+<span class="material-symbols-outlined text-zinc-600 group-hover:text-zinc-400 cursor-grab">drag_indicator</span>
+</td>
+<td class="px-4 py-2 font-mono-label text-[11px] text-zinc-400">settings.profile.upload_avatar</td>
+<td class="px-4 py-2 align-top text-xs leading-relaxed text-zinc-200">Upload profile picture</td>
+<td class="px-4 py-2 align-top text-xs leading-relaxed text-zinc-200">Profilbild hochladen</td>
+<td class="px-4 py-2 align-top text-xs leading-relaxed text-zinc-200">Télécharger une photo de profil</td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+<!-- Segment Editor Sidebar (Contextual) -->
+<aside class="w-80 h-full border-l border-[#333333] bg-zinc-950 flex flex-col">
+<div class="h-9 px-4 flex items-center border-b border-[#333333] justify-between">
+<span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Segment Editor</span>
+<span class="material-symbols-outlined text-zinc-500 cursor-pointer hover:text-white">close</span>
+</div>
+<div class="p-4 flex flex-col gap-6">
+<div class="space-y-2">
+<label class="text-[10px] font-mono-label text-zinc-500 uppercase">Source (English)</label>
+<div class="bg-zinc-900 border border-[#333333] p-3 text-xs leading-relaxed text-zinc-300">
+                        Save Changes
+                    </div>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-mono-label text-zinc-500 uppercase">Target (French)</label>
+<textarea class="w-full bg-zinc-900 border border-[#7b61ff]/40 p-3 text-xs leading-relaxed text-zinc-200 h-32 focus:outline-none focus:border-[#7b61ff] resize-none" placeholder="Enter translation..."></textarea>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<label class="text-[10px] font-mono-label text-zinc-500 uppercase">Status</label>
+<span class="px-2 py-0.5 rounded-full border border-yellow-900/50 bg-yellow-950/20 text-yellow-400 text-[10px]">In Progress</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-[11px] text-zinc-500">
+<span class="material-symbols-outlined text-[14px]">history</span>
+<span>Last edited 2h ago by Claude</span>
+</div>
+</div>
+</div>
+<button class="w-full bg-[#7b61ff] text-white py-2 rounded text-xs font-medium hover:brightness-110 transition-all">
+                    Commit Changes
+                </button>
+</div>
+</aside>
+</div>
+<!-- Status Footer -->
+<footer class="h-6 px-4 bg-zinc-950 border-t border-[#333333] flex items-center justify-between">
+<div class="flex items-center gap-4 text-[10px] font-mono-label">
+<div class="flex items-center gap-1.5 text-[#7b61ff]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#7b61ff]"></span>
+<span>Connected to git:main</span>
+</div>
+<div class="text-zinc-600">3 modified • 12 untranslated</div>
+</div>
+<div class="flex items-center gap-4 text-[10px] font-mono-label text-zinc-600">
+<span>UTF-8</span>
+<span>JSON</span>
+<span>Line 42, Col 18</span>
+</div>
+</footer>
+</body></html>

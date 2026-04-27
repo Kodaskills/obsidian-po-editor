@@ -27,7 +27,9 @@ import {
   ObsidianNotificationAdapter,
   ObsidianViewAdapter,
   type POEditorSettings,
+  PO_STATS_VIEW_TYPE,
   POSettingsTab,
+  POStatsView,
   POView,
   UnmarkFuzzyCommand,
   ValidatePOCommand,
@@ -76,6 +78,8 @@ export default class POEditorPlugin extends Plugin {
         new POView(leaf, this, this.poConverter, this.parsePOUseCase, this.convertToFormatUseCase),
     );
 
+    this.registerView(PO_STATS_VIEW_TYPE, (leaf) => new POStatsView(leaf));
+
     this.registerExtensions(["po", "pot"], "po-view");
 
     this.addSettingTab(new POSettingsTab(this.app, this));
@@ -100,6 +104,16 @@ export default class POEditorPlugin extends Plugin {
         });
       }),
     );
+  }
+
+  async openStatsPanel(): Promise<void> {
+    const existing = this.app.workspace.getLeavesOfType(PO_STATS_VIEW_TYPE);
+    let leaf = existing[0];
+    if (!leaf) {
+      leaf = this.app.workspace.getRightLeaf(false) ?? this.app.workspace.getLeaf("split");
+      await leaf.setViewState({ type: PO_STATS_VIEW_TYPE, active: true });
+    }
+    this.app.workspace.revealLeaf(leaf);
   }
 
   onCreate() {
@@ -171,6 +185,13 @@ export default class POEditorPlugin extends Plugin {
         const leaf = this.app.workspace.getLeaf("tab");
         await leaf.openFile(file as TFile);
       },
+    });
+
+    this.addCommand({
+      id: "po-stats",
+      icon: "languages",
+      name: "Open PO Statistics panel",
+      callback: async () => await this.openStatsPanel(),
     });
 
     this.addCommand({

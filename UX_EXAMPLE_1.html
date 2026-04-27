@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Linguist Core - Project Alpha</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#3a3842",
+                        "on-primary-fixed": "#1a0063",
+                        "secondary": "#c8c6c5",
+                        "on-secondary-fixed": "#1b1b1c",
+                        "surface-container-highest": "#35333e",
+                        "on-surface-variant": "#c9c4d8",
+                        "background": "#14121b",
+                        "secondary-fixed": "#e5e2e1",
+                        "outline": "#928ea1",
+                        "inverse-primary": "#5d3fe0",
+                        "on-tertiary-fixed-variant": "#6e3900",
+                        "tertiary-fixed": "#ffdcc3",
+                        "on-error": "#690005",
+                        "tertiary-container": "#d57a1e",
+                        "inverse-on-surface": "#312f39",
+                        "primary-fixed-dim": "#c9bfff",
+                        "on-tertiary-container": "#432100",
+                        "surface-tint": "#c9bfff",
+                        "primary": "#c9bfff",
+                        "error": "#ffb4ab",
+                        "primary-fixed": "#e5deff",
+                        "surface-container-high": "#2b2932",
+                        "secondary-fixed-dim": "#c8c6c5",
+                        "on-surface": "#e5e0ee",
+                        "on-primary": "#2e009c",
+                        "on-primary-fixed-variant": "#441cc8",
+                        "surface-container-lowest": "#0e0d16",
+                        "on-tertiary": "#4d2600",
+                        "surface": "#14121b",
+                        "primary-container": "#917eff",
+                        "surface-container-low": "#1c1a24",
+                        "on-tertiary-fixed": "#2f1500",
+                        "on-primary-container": "#28008a",
+                        "on-secondary-container": "#b7b5b4",
+                        "inverse-surface": "#e5e0ee",
+                        "on-secondary": "#303030",
+                        "tertiary": "#ffb77d",
+                        "surface-container": "#201e28",
+                        "on-error-container": "#ffdad6",
+                        "on-background": "#e5e0ee",
+                        "surface-variant": "#35333e",
+                        "on-secondary-fixed-variant": "#474746",
+                        "secondary-container": "#474746",
+                        "error-container": "#93000a",
+                        "surface-dim": "#14121b",
+                        "tertiary-fixed-dim": "#ffb77d",
+                        "outline-variant": "#484555"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-gap": "8px",
+                        "table-cell-padding": "8px",
+                        "pane-padding": "12px",
+                        "unit": "4px",
+                        "gutter": "1px"
+                    },
+                    "fontFamily": {
+                        "heading-sm": ["Inter"],
+                        "mono-label": ["SF Mono, Menlo, monospace"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "heading-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "mono-label": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "400"}],
+                        "body-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "body-md": ["13px", {"lineHeight": "18px", "letterSpacing": "0em", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+            font-size: 16px;
+        }
+        .zebra-row:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        .active-border-accent {
+            border-left: 2px solid #7b61ff;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333333;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-hidden h-screen flex flex-col">
+<!-- TopAppBar Shell -->
+<header class="bg-[#1a1a1a] dark:bg-[#1a1a1a] font-inter text-[13px] tracking-tight docked full-width top-0 border-b border-[#333333] flex justify-between items-center h-10 px-4 w-full z-50">
+<div class="flex items-center gap-6">
+<span class="text-sm font-bold text-gray-100 uppercase tracking-widest">Linguist Core</span>
+<nav class="flex gap-4 h-full items-center">
+<a class="text-[#7b61ff] border-b-2 border-[#7b61ff] pb-1" href="#">Editor</a>
+<a class="text-gray-400 hover:text-gray-200 transition-colors" href="#">Glossary</a>
+<a class="text-gray-400 hover:text-gray-200 transition-colors" href="#">History</a>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<div class="bg-[#2a2a2a] px-2 py-0.5 rounded flex items-center gap-2 border border-[#333333]">
+<span class="material-symbols-outlined text-gray-400">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-[12px] w-32 text-gray-200" placeholder="Search keys..." type="text"/>
+</div>
+<button class="text-gray-400 hover:text-white transition-all duration-150 ease-in-out p-1 hover:bg-[#2a2a2a] rounded">
+<span class="material-symbols-outlined">sync</span>
+</button>
+<button class="text-gray-400 hover:text-white transition-all duration-150 ease-in-out p-1 hover:bg-[#2a2a2a] rounded">
+<span class="material-symbols-outlined">download</span>
+</button>
+<button class="text-gray-400 hover:text-white transition-all duration-150 ease-in-out p-1 hover:bg-[#2a2a2a] rounded">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SideNavBar Shell -->
+<aside class="bg-[#1a1a1a] dark:bg-[#1a1a1a] font-inter text-[12px] font-medium docked h-screen left-0 border-r border-[#333333] flex flex-col w-14 hover:w-48 transition-all duration-300 z-50 p-2 group">
+<div class="flex flex-col gap-1 flex-1">
+<div class="flex items-center p-2 mb-4 overflow-hidden whitespace-nowrap">
+<div class="w-8 h-8 rounded-sm bg-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary-container">folder_open</span>
+</div>
+<div class="ml-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<div class="font-bold text-white leading-tight">Project Alpha</div>
+<div class="text-[10px] text-gray-500">v1.0.4</div>
+</div>
+</div>
+<div class="bg-[#2a2a2a] text-white rounded-sm cursor-pointer active:opacity-80 flex items-center p-2 overflow-hidden">
+<span class="material-symbols-outlined shrink-0">folder_open</span>
+<span class="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">Files</span>
+</div>
+<div class="text-gray-500 hover:text-gray-300 hover:bg-[#232323] cursor-pointer active:opacity-80 flex items-center p-2 overflow-hidden">
+<span class="material-symbols-outlined shrink-0" data-icon="database">database</span>
+<span class="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">Translation Memory</span>
+</div>
+<div class="text-gray-500 hover:text-gray-300 hover:bg-[#232323] cursor-pointer active:opacity-80 flex items-center p-2 overflow-hidden">
+<span class="material-symbols-outlined shrink-0" data-icon="assignment_turned_in">assignment_turned_in</span>
+<span class="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">Review</span>
+</div>
+<div class="text-gray-500 hover:text-gray-300 hover:bg-[#232323] cursor-pointer active:opacity-80 flex items-center p-2 overflow-hidden">
+<span class="material-symbols-outlined shrink-0" data-icon="settings">settings</span>
+<span class="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">Settings</span>
+</div>
+</div>
+<div class="flex flex-col gap-1 border-t border-[#333333] pt-2">
+<div class="text-gray-500 hover:text-gray-300 hover:bg-[#232323] cursor-pointer active:opacity-80 flex items-center p-2 overflow-hidden">
+<span class="material-symbols-outlined shrink-0" data-icon="help">help</span>
+<span class="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">Docs</span>
+</div>
+<div class="text-gray-500 hover:text-gray-300 hover:bg-[#232323] cursor-pointer active:opacity-80 flex items-center p-2 overflow-hidden">
+<span class="material-symbols-outlined shrink-0" data-icon="logout">logout</span>
+<span class="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">Logout</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col bg-surface min-w-0">
+<!-- Stats/Actions Header -->
+<div class="h-12 border-b border-[#333333] flex items-center justify-between px-4 bg-surface-container-low shrink-0">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="font-heading-sm text-heading-sm text-white">messages.json</span>
+<span class="bg-[#2a2a2a] text-[#7b61ff] px-1.5 py-0.5 rounded text-[10px] font-bold border border-[#333333]">84%</span>
+</div>
+<div class="h-4 w-[1px] bg-[#333333]"></div>
+<div class="flex gap-4 text-[11px] font-mono-label text-outline uppercase tracking-wider">
+<span>Total: 1,402</span>
+<span class="text-[#a291ff]">Translated: 1,180</span>
+<span class="text-error">Missing: 222</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-[#7b61ff] text-white rounded shadow-sm text-[12px] font-semibold hover:bg-opacity-90">
+<span class="material-symbols-outlined !text-[14px]" style="font-variation-settings: 'FILL' 1;">save</span>
+                        Save All
+                    </button>
+<button class="p-1.5 text-outline hover:text-white transition-colors border border-transparent hover:border-[#333333] rounded">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Translation Grid Wrapper -->
+<div class="flex-1 overflow-auto">
+<table class="w-full border-collapse">
+<thead class="sticky top-0 bg-surface-container-high z-10">
+<tr class="text-left text-[11px] font-mono-label text-outline uppercase tracking-wider border-b border-[#333333]">
+<th class="w-8 px-table-cell-padding"></th>
+<th class="w-48 px-table-cell-padding py-2 font-medium border-r border-[#333333]">Key</th>
+<th class="w-1/3 px-table-cell-padding py-2 font-medium border-r border-[#333333]">Source (English)</th>
+<th class="w-1/3 px-table-cell-padding py-2 font-medium border-r border-[#333333]">Target (German)</th>
+<th class="w-1/3 px-table-cell-padding py-2 font-medium">Target (French)</th>
+</tr>
+</thead>
+<tbody class="text-[13px]">
+<!-- Regular Row -->
+<tr class="zebra-row group border-b border-transparent hover:border-[#333333]">
+<td class="px-table-cell-padding text-center">
+<span class="material-symbols-outlined text-[#333333] group-hover:text-outline cursor-drag">drag_indicator</span>
+</td>
+<td class="px-table-cell-padding py-2 font-mono-label text-[#928ea1] border-r border-[#333333]">ui.welcome_message</td>
+<td class="px-table-cell-padding py-2 border-r border-[#333333] align-top text-on-surface">Welcome to the application.</td>
+<td class="px-table-cell-padding py-2 border-r border-[#333333] align-top">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-on-surface placeholder-outline-variant" type="text" value="Willkommen in der Anwendung."/>
+</td>
+<td class="px-table-cell-padding py-2 align-top">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-on-surface placeholder-outline-variant" type="text" value="Bienvenue dans l'application."/>
+</td>
+</tr>
+<!-- PLURAL EXPANDED ROW -->
+<tr class="bg-surface-container-low active-border-accent border-y border-[#333333]">
+<td class="px-table-cell-padding text-center">
+<span class="material-symbols-outlined text-[#7b61ff]" style="font-variation-settings: 'FILL' 1;">expand_more</span>
+</td>
+<td class="px-table-cell-padding py-2 font-mono-label border-r border-[#333333] align-top">
+<div class="flex items-center gap-1.5 text-white mb-1">
+<span class="material-symbols-outlined !text-[14px]">format_list_numbered</span>
+<span>common.items_count</span>
+</div>
+<span class="bg-[#1a1a1a] text-[#a291ff] px-1 py-0.5 rounded-sm text-[9px] uppercase font-bold border border-[#333333]">Plural</span>
+</td>
+<td class="px-table-cell-padding py-2 border-r border-[#333333] align-top">
+<div class="flex flex-col gap-3">
+<div class="flex flex-col">
+<span class="text-[10px] text-outline font-mono-label mb-1">SINGULAR</span>
+<div class="text-on-surface">You have {count} item in your cart.</div>
+</div>
+<div class="flex flex-col">
+<span class="text-[10px] text-outline font-mono-label mb-1">PLURAL</span>
+<div class="text-on-surface">You have {count} items in your cart.</div>
+</div>
+</div>
+</td>
+<!-- German Plurals (One, Other) -->
+<td class="px-table-cell-padding py-2 border-r border-[#333333] align-top">
+<div class="flex flex-col gap-3">
+<div class="flex flex-col">
+<div class="flex justify-between items-baseline mb-1">
+<span class="text-[10px] text-[#7b61ff] font-mono-label font-bold uppercase">One</span>
+<span class="text-[9px] text-outline font-mono-label">N = 1</span>
+</div>
+<div class="bg-[#1a1a1a] border border-[#333333] rounded px-2 py-1.5 focus-within:border-[#7b61ff] transition-colors">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-on-surface" type="text" value="Sie haben {count} Artikel im Warenkorb."/>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex justify-between items-baseline mb-1">
+<span class="text-[10px] text-outline font-mono-label font-bold uppercase">Other</span>
+<span class="text-[9px] text-outline font-mono-label">N ≠ 1</span>
+</div>
+<div class="bg-[#1a1a1a] border border-[#333333] rounded px-2 py-1.5 focus-within:border-[#7b61ff] transition-colors">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-on-surface" type="text" value="Sie haben {count} Artikel im Warenkorb."/>
+</div>
+</div>
+</div>
+</td>
+<!-- French Plurals (Zero, One, Other) -->
+<td class="px-table-cell-padding py-2 align-top">
+<div class="flex flex-col gap-3">
+<div class="flex flex-col">
+<div class="flex justify-between items-baseline mb-1">
+<span class="text-[10px] text-outline font-mono-label font-bold uppercase">Zero</span>
+<span class="text-[9px] text-outline font-mono-label">N = 0</span>
+</div>
+<div class="bg-[#1a1a1a] border border-[#333333] rounded px-2 py-1.5 focus-within:border-[#7b61ff] transition-colors">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-on-surface" type="text" value="Votre panier est vide."/>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex justify-between items-baseline mb-1">
+<span class="text-[10px] text-[#7b61ff] font-mono-label font-bold uppercase">One</span>
+<span class="text-[9px] text-outline font-mono-label">N = 1, 0</span>
+</div>
+<div class="bg-[#1a1a1a] border border-[#333333] rounded px-2 py-1.5 focus-within:border-[#7b61ff] transition-colors">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-on-surface" type="text" value="Vous avez {count} article dans votre panier."/>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex justify-between items-baseline mb-1">
+<span class="text-[10px] text-outline font-mono-label font-bold uppercase">Other</span>
+<span class="text-[9px] text-outline font-mono-label">N &gt; 1</span>
+</div>
+<div class="bg-[#1a1a1a] border border-[#333333] rounded px-2 py-1.5 focus-within:border-[#7b61ff] transition-colors">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-on-surface" type="text" value="Vous avez {count} articles dans votre panier."/>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Another Regular Row -->
+<tr class="zebra-row group border-b border-transparent hover:border-[#333333]">
+<td class="px-table-cell-padding text-center">
+<span class="material-symbols-outlined text-[#333333] group-hover:text-outline cursor-drag">drag_indicator</span>
+</td>
+<td class="px-table-cell-padding py-2 font-mono-label text-[#928ea1] border-r border-[#333333]">actions.confirm</td>
+<td class="px-table-cell-padding py-2 border-r border-[#333333] align-top text-on-surface">Confirm changes</td>
+<td class="px-table-cell-padding py-2 border-r border-[#333333] align-top">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-on-surface" type="text" value="Änderungen bestätigen"/>
+</td>
+<td class="px-table-cell-padding py-2 align-top">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-on-surface" type="text" value="Confirmer les modifications"/>
+</td>
+</tr>
+<!-- Empty Placeholder Row -->
+<tr class="zebra-row group">
+<td class="px-table-cell-padding text-center">
+<span class="material-symbols-outlined text-[#333333]">drag_indicator</span>
+</td>
+<td class="px-table-cell-padding py-2 font-mono-label text-[#928ea1] border-r border-[#333333]">errors.unexpected</td>
+<td class="px-table-cell-padding py-2 border-r border-[#333333] align-top text-on-surface">An unexpected error occurred.</td>
+<td class="px-table-cell-padding py-2 border-r border-[#333333] align-top">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-on-surface italic placeholder-outline-variant" placeholder="Add translation..." type="text"/>
+</td>
+<td class="px-table-cell-padding py-2 align-top">
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-on-surface italic placeholder-outline-variant" placeholder="Add translation..." type="text"/>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Segment Editor Bottom Pane -->
+<div class="h-48 border-t border-[#333333] bg-surface-container-lowest flex flex-col shrink-0">
+<div class="px-4 py-2 border-b border-[#333333] flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#7b61ff]">edit_note</span>
+<span class="font-heading-sm text-[12px] text-white">Segment Editor: <span class="font-mono-label text-outline ml-1">common.items_count (Other)</span></span>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-[11px] text-outline uppercase tracking-widest font-bold">Source Context</span>
+<div class="flex gap-1">
+<button class="p-1 hover:bg-[#2a2a2a] rounded transition-colors">
+<span class="material-symbols-outlined !text-[16px]">keyboard_arrow_up</span>
+</button>
+<button class="p-1 hover:bg-[#2a2a2a] rounded transition-colors">
+<span class="material-symbols-outlined !text-[16px]">keyboard_arrow_down</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex-1 flex divide-x divide-[#333333]">
+<div class="flex-1 flex flex-col p-3">
+<span class="text-[10px] text-outline font-mono-label mb-2">SOURCE (EN)</span>
+<div class="text-[13px] text-on-surface-variant leading-relaxed">
+                            You have {count} items in your cart.
+                        </div>
+</div>
+<div class="flex-1 flex flex-col p-3 bg-surface-container-low">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] text-[#a291ff] font-mono-label">TARGET (DE)</span>
+<span class="text-[10px] bg-[#333333] text-gray-400 px-1 rounded">MATCH: 100%</span>
+</div>
+<textarea class="flex-1 bg-transparent border-none p-0 focus:ring-0 text-[13px] text-on-surface resize-none">Sie haben {count} Artikel im Warenkorb.</textarea>
+<div class="flex justify-end mt-2 gap-2">
+<span class="text-[10px] text-outline-variant font-mono-label">Modified 2m ago</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

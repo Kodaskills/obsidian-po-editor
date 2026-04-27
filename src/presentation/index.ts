@@ -11,4 +11,5 @@ export * from "./modals/ConvertModal";
 export * from "./modals/CreatePOModal";
 export * from "./modals/POEntryModal";
 export * from "./settings/POSettingsTab";
+export * from "./views/POStatsView";
 export * from "./views/POView";

@@ -16,6 +16,13 @@ import {
 import { type POConverter } from "@infrastructure/index";
 import { ConvertModal, type CustomAction, POEntryModal } from "@presentation/index";
 import {
+  type FilterChangeCallback,
+  type FilterOptions,
+  type LanguageStat,
+  PO_STATS_VIEW_TYPE,
+  POStatsView,
+} from "./POStatsView";
+import {
   type App,
   Modal,
   Notice,
@@ -40,14 +47,16 @@ export class POView extends TextFileView {
   private siblingPoFiles: ProjectFile[] = [];
   private plugin: POEditorPlugin;
   private isProjectMode: boolean = false;
-  private showFullStats: boolean = false;
-  private activeFilter: string = "all";
-  private activeFlagFilter: string = "";
-  private activeCommentFilter: string = "";
-  private activeContext: string = "";
+  private includedStatuses: string[] = [];
+  private includedFlags: string[] = [];
+  private includedComments: string[] = [];
+  private includedContexts: string[] = [];
+  private includedLanguages: string[] = [];
   private editorMode: "grid" | "text" = "grid";
   private poTextEditor: POTextEditor | null = null;
   private pendingTextContent: string = "";
+  private activeSearch: string = "";
+  private rowRenderer: (() => void) | null = null;
 
   constructor(
     leaf: WorkspaceLeaf,
@@ -217,11 +226,11 @@ export class POView extends TextFileView {
     const header = container.createDiv({
       attr: {
         style:
-          "display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--background-modifier-border);",
+          "display: flex; align-items: center; gap: 8px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--background-modifier-border);",
       },
     });
     const titleContainer = header.createDiv({
-      attr: { style: "display: flex; align-items: center; gap: 12px;" },
+      attr: { style: "display: flex; align-items: center; gap: 12px; flex-shrink: 0;" },
     });
     setIcon(titleContainer.createDiv(), "languages");
     titleContainer.createEl("h2", { text: this.file.name, attr: { style: "margin: 0;" } });
@@ -310,18 +319,53 @@ export class POView extends TextFileView {
       }
     }
 
-    const actions = header.createDiv({ attr: { style: "display: flex; gap: 8px;" } });
-    actions.createEl("button", { cls: "btn btn-primary", text: "+ Entry" }).onclick = () =>
+    if (this.editorMode !== "text") {
+      const statsEl = header.createDiv({
+        attr: { style: "display: flex; align-items: center; gap: 0;" },
+      });
+      this.renderStatsDashboard(statsEl);
+    }
+
+    const rightSection = header.createDiv({
+      attr: { style: "display: flex; align-items: center; gap: 8px; margin-left: auto; flex-shrink: 0;" },
+    });
+
+    const iconBtn = (
+      parent: HTMLElement,
+      icon: string,
+      title: string,
+      cls = "btn",
+    ): HTMLButtonElement => {
+      const btn = parent.createEl("button", {
+        cls,
+        attr: {
+          title,
+          style: "display: flex; align-items: center; justify-content: center; padding: 4px 6px;",
+        },
+      });
+      setIcon(btn, icon);
+      return btn;
+    };
+
+    if (this.editorMode !== "text") {
+      iconBtn(rightSection, "bar-chart-horizontal", "Details", "btn btn-sm").onclick = () =>
+        void this.openStatsPanel();
+      rightSection.createDiv({
+        attr: { style: "width: 1px; height: 16px; background: var(--background-modifier-border); flex-shrink: 0;" },
+      });
+    }
+
+    iconBtn(rightSection, "plus", "New entry", "btn btn-primary").onclick = () =>
       this.openAddEntryModal();
     if (this.isProjectMode || this.file?.parent) {
-      actions.createEl("button", { cls: "btn", text: "Sync" }).onclick = () => this.openSyncModal();
+      iconBtn(rightSection, "refresh-cw", "Sync entries").onclick = () => this.openSyncModal();
     }
-    actions.createEl("button", { cls: "btn", text: "Export" }).onclick = () =>
-      this.openExportModal();
-    const toggleBtn = actions.createEl("button", {
-      cls: "btn",
-      text: this.editorMode === "text" ? "≡ Grid" : "</> Text",
-    });
+    iconBtn(rightSection, "upload", "Export").onclick = () => this.openExportModal();
+    const toggleBtn = iconBtn(
+      rightSection,
+      this.editorMode === "text" ? "layout-grid" : "code",
+      this.editorMode === "text" ? "Switch to grid" : "Switch to text",
+    );
     toggleBtn.onclick = () => {
       if (this.editorMode === "text") {
         this.switchToGridMode();
@@ -338,7 +382,7 @@ export class POView extends TextFileView {
       return;
     }
 
-    this.renderStatsDashboard(container);
+    this.syncPanel();
 
     const searchRow = container.createDiv({
       attr: { style: "display: flex; align-items: center; gap: 8px; margin-bottom: 16px;" },
@@ -347,166 +391,48 @@ export class POView extends TextFileView {
       cls: "po-search-input",
       attr: { type: "text", placeholder: "Search...", style: "flex: 1; border-radius: 8px;" },
     });
-
-    const mainStats = getStatistics(this.mainPoFile);
-
-    // Status combobox
-    const statusSelect = searchRow.createEl("select", {
-      attr: {
-        style:
-          "border-radius: 8px; padding: 4px 8px; background: var(--background-secondary); color: var(--text-normal); border: 1px solid var(--background-modifier-border); font-size: 13px;",
-      },
-    }) as HTMLSelectElement;
-    const aggregatedStats = this.isProjectMode
-      ? this.getAggregatedProjectStats()
-      : { fuzzy: mainStats.fuzzy, comments: 0 };
-    [
-      { value: "all", label: `All (${mainStats.total})` },
-      { value: "untranslated", label: `Untranslated (${mainStats.untranslated})` },
-      { value: "translated", label: `Translated (${mainStats.translated})` },
-      { value: "fuzzy", label: `Fuzzy (${aggregatedStats.fuzzy})` },
-    ].forEach((opt) => {
-      const el = document.createElement("option");
-      el.value = opt.value;
-      el.textContent = opt.label;
-      if (opt.value === this.activeFilter) el.selected = true;
-      statusSelect.appendChild(el);
-    });
-    statusSelect.onchange = () => {
-      this.activeFilter = statusSelect.value;
-      searchInput.oninput?.(new InputEvent("input"));
+    searchInput.value = this.activeSearch;
+    searchInput.oninput = () => {
+      this.activeSearch = searchInput.value;
+      this.rowRenderer?.();
     };
 
-    // Flags combobox
-    const flagActions = this.plugin.settings.quickActions.filter(
-      (qa): qa is typeof qa & { flag: string } => qa.flag !== undefined,
-    );
-    if (flagActions.length > 0) {
-      const aggregatedFlagCounts = this.isProjectMode
-        ? this.getAggregatedFlagCounts()
-        : mainStats.flags;
-      const flagSelect = searchRow.createEl("select", {
+    const activeFilterCount = [
+      this.includedStatuses.length > 0,
+      this.includedFlags.length > 0,
+      this.includedComments.length > 0,
+      this.includedContexts.length > 0,
+      this.includedLanguages.length > 0,
+    ].filter(Boolean).length;
+
+    const filterBtn = searchRow.createEl("button", {
+      cls: "btn",
+      attr: {
+        style: `display: flex; align-items: center; gap: 5px; flex-shrink: 0;${activeFilterCount > 0 ? " color: var(--interactive-accent);" : ""}`,
+      },
+    });
+    setIcon(filterBtn.createDiv(), "filter");
+    if (activeFilterCount > 0) {
+      filterBtn.createSpan({
+        text: activeFilterCount.toString(),
         attr: {
           style:
-            "border-radius: 8px; padding: 4px 8px; background: var(--background-secondary); color: var(--text-normal); border: 1px solid var(--background-modifier-border); font-size: 13px;",
+            "font-size: 10px; font-weight: 700; background: var(--interactive-accent); color: white; border-radius: 8px; padding: 1px 5px; line-height: 1.4;",
         },
-      }) as HTMLSelectElement;
-      const allOpt = document.createElement("option");
-      allOpt.value = "";
-      allOpt.textContent = "All flags";
-      flagSelect.appendChild(allOpt);
-      flagActions.forEach((qa) => {
-        const el = document.createElement("option");
-        el.value = qa.flag;
-        el.textContent = `flag: ${qa.label} (${aggregatedFlagCounts[qa.flag] ?? 0})`;
-        if (qa.flag === this.activeFlagFilter) el.selected = true;
-        flagSelect.appendChild(el);
       });
-      flagSelect.onchange = () => {
-        this.activeFlagFilter = flagSelect.value;
-        searchInput.oninput?.(new InputEvent("input"));
-      };
     }
-
-    // Context filter select
-    const entries = this.mainPoFile?.entries ?? [];
-    const contexts = [
-      ...new Set(entries.map((e) => e.msgctxt).filter((c): c is string => !!c)),
-    ].sort();
-
-    // Comments combobox
-    const commentActions = this.plugin.settings.quickActions.filter(
-      (qa): qa is typeof qa & { comment: string } => qa.comment !== undefined && !qa.flag,
-    );
-    let allComments: string[] = [];
-    if (this.isProjectMode) {
-      const allFiles = [this.mainPoFile, ...this.siblingPoFiles.map((s) => s.poFile)];
-      for (const poFile of allFiles) {
-        if (!poFile) continue;
-        for (const entry of poFile.entries) {
-          if (entry.comments?.translator) {
-            allComments.push(entry.comments.translator);
-          }
-        }
-      }
-    } else {
-      allComments = entries.map((e) => e.comments?.translator).filter((c): c is string => !!c);
-    }
-    allComments = [...new Set(allComments)].sort();
-    if (commentActions.length > 0 || allComments.length > 0) {
-      const commentSelect = searchRow.createEl("select", {
-        attr: {
-          style:
-            "border-radius: 8px; padding: 4px 8px; background: var(--background-secondary); color: var(--text-normal); border: 1px solid var(--background-modifier-border); font-size: 13px;",
-        },
-      }) as HTMLSelectElement;
-      const allOpt = document.createElement("option");
-      allOpt.value = "";
-      allOpt.textContent = "All comments";
-      commentSelect.appendChild(allOpt);
-      const existingComments = new Set(allComments);
-      commentActions.forEach((qa) => {
-        const count = allComments.filter((c) => c === qa.comment).length;
-        if (count > 0 || this.activeCommentFilter === qa.comment) {
-          const el = document.createElement("option");
-          el.value = qa.comment;
-          el.textContent = `comment: ${qa.label} (${count})`;
-          if (qa.comment === this.activeCommentFilter) el.selected = true;
-          commentSelect.appendChild(el);
-        }
-      });
-      existingComments.forEach((c) => {
-        const isInActions = commentActions.some((qa) => qa.comment === c);
-        if (!isInActions) {
-          const el = document.createElement("option");
-          el.value = c;
-          el.textContent = c;
-          if (c === this.activeCommentFilter) el.selected = true;
-          commentSelect.appendChild(el);
-        }
-      });
-      commentSelect.onchange = () => {
-        this.activeCommentFilter = commentSelect.value;
-        searchInput.oninput?.(new InputEvent("input"));
-      };
-    }
-
-    if (contexts.length > 0) {
-      const ctxSelect = searchRow.createEl("select", {
-        attr: {
-          style:
-            "border-radius: 8px; padding: 4px 8px; background: var(--background-secondary); color: var(--text-normal); border: 1px solid var(--background-modifier-border); font-size: 13px;",
-        },
-      }) as HTMLSelectElement;
-      const allOpt = document.createElement("option");
-      allOpt.value = "";
-      allOpt.textContent = "All contexts";
-      ctxSelect.appendChild(allOpt);
-      contexts.forEach((ctx) => {
-        const opt = document.createElement("option");
-        opt.value = ctx;
-        opt.textContent = ctx;
-        if (ctx === this.activeContext) opt.selected = true;
-        ctxSelect.appendChild(opt);
-      });
-      ctxSelect.value = this.activeContext;
-      ctxSelect.onchange = () => {
-        this.activeContext = ctxSelect.value;
-        searchInput.oninput?.(new InputEvent("input"));
-      };
-    }
+    filterBtn.onclick = () => void this.openFiltersPanel();
 
     const listContainer = container.createDiv({
       cls: "po-entry-list",
       attr: { style: "border-radius: 8px; overflow: hidden;" },
     });
-    this.renderGrid(listContainer, searchInput);
+    this.renderGrid(listContainer);
   }
 
   private renderStatsDashboard(container: HTMLElement): void {
     const mainStats = getStatistics(this.mainPoFile);
 
-    // Count ALL PO files in folder for accurate avg denominator
     const totalSiblingFiles =
       this.file?.parent?.children.filter(
         (c) =>
@@ -517,7 +443,6 @@ export class POView extends TextFileView {
     const totalFiles = totalSiblingFiles + 1;
 
     const allParsedStats = [mainStats, ...this.siblingPoFiles.map((s) => s.stats)];
-    // percentage-based avg: unparsed/empty files count as 0%
     const avgProgress =
       this.isProjectMode && totalFiles > 1
         ? Math.round(
@@ -530,264 +455,265 @@ export class POView extends TextFileView {
           ? Math.round((mainStats.translated / mainStats.total) * 100)
           : 0;
 
-    const displayStats = mainStats;
-    const progress = avgProgress;
-
-    const dashboard = container.createDiv({
+    // Separator + GLOBAL label before progress bar
+    this.renderStatBarSep(container);
+    container.createSpan({
+      text: "GLOBAL",
       attr: {
         style:
-          "margin-bottom: 24px; background: var(--background-secondary-alt); border-radius: 12px; padding: 20px; border: 1px solid var(--background-modifier-border);",
+          "font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.8px; white-space: nowrap;",
       },
     });
 
-    const cardGrid = dashboard.createDiv({
+    // Progress section — inline in header, no wrapper box
+    const progressSection = container.createDiv({
+      attr: { style: "display: flex; align-items: center; gap: 8px; flex-shrink: 0;" },
+    });
+    const barTrack = progressSection.createDiv({
       attr: {
         style:
-          "display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px;",
+          "width: 80px; height: 5px; background: var(--background-modifier-border); border-radius: 3px; overflow: hidden;",
       },
+    });
+    barTrack.createDiv({
+      attr: {
+        style: `width: ${avgProgress}%; height: 100%; background: var(--text-success); border-radius: 3px; transition: width 0.4s ease;`,
+      },
+    });
+    progressSection.createSpan({
+      text: `${avgProgress}%`,
+      attr: { style: "font-size: 12px; font-weight: 600; color: var(--text-success); white-space: nowrap;" },
     });
 
     if (this.isPOTFile) {
-      this.renderStatCard(
-        cardGrid,
-        displayStats.total.toString(),
-        "Keys",
-        "var(--text-normal)",
-        "list",
-      );
+      this.renderStatBarItem(container, mainStats.total.toString(), "Keys");
       return;
     }
 
-    this.renderStatCard(
-      cardGrid,
-      `${progress}%`,
-      this.isProjectMode ? "Project Avg." : "Completion",
-      "var(--text-success)",
-      "check-circle",
+    this.renderStatBarSep(container);
+    this.renderStatBarItem(container, mainStats.translated.toString(), "Translated", "var(--text-success)");
+    this.renderStatBarSep(container);
+    const untranslated = mainStats.total - mainStats.translated;
+    this.renderStatBarItem(
+      container,
+      untranslated.toString(),
+      "Untranslated",
+      untranslated > 0 ? "var(--text-warning)" : "var(--text-muted)",
     );
-    this.renderStatCard(
-      cardGrid,
-      displayStats.total.toString(),
-      "Keys",
-      "var(--text-normal)",
-      "list",
-    );
-    this.renderStatCard(
-      cardGrid,
-      displayStats.wordCount.toLocaleString(),
-      "Words",
-      "var(--text-accent)",
-      "type",
-    );
-    this.renderStatCard(
-      cardGrid,
-      displayStats.charCount.toLocaleString(),
-      "Chars",
-      "var(--text-accent)",
-      "text",
-      `${displayStats.charCountNoSpaces.toLocaleString()} no sp.`,
-    );
-    if (displayStats.fuzzy > 0)
-      this.renderStatCard(
-        cardGrid,
-        displayStats.fuzzy.toString(),
-        "Fuzzy",
-        "var(--text-warning)",
-        "alert-circle",
-      );
+    this.renderStatBarSep(container);
+    this.renderStatBarItem(container, mainStats.total.toString(), this.isProjectMode ? "Keys/lang" : "Keys");
+    this.renderStatBarSep(container);
+    this.renderStatBarItem(container, mainStats.wordCount.toLocaleString(), "Words");
+    this.renderStatBarSep(container);
+    this.renderStatBarItem(container, mainStats.charCount.toLocaleString(), "Chars");
 
-    const progressContainer = dashboard.createDiv({ attr: { style: "margin-top: 24px;" } });
-    const barBg = progressContainer.createDiv({
-      attr: {
-        style:
-          "height: 8px; background: var(--background-modifier-border); border-radius: 4px; overflow: hidden; display: flex;",
-      },
-    });
-    barBg.createDiv({
-      attr: {
-        style: `width: ${progress}%; background: var(--text-success); transition: width 0.5s ease;`,
-      },
-    });
-
-    if (this.isProjectMode) {
-      const detailsToggle = dashboard.createEl("div", {
-        attr: {
-          style:
-            "margin-top: 16px; border-top: 1px solid var(--background-modifier-border); padding-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; color: var(--text-accent); font-size: 12px;",
-        },
-      });
-      setIcon(detailsToggle, this.showFullStats ? "chevron-up" : "chevron-down");
-      detailsToggle.createSpan({
-        text: this.showFullStats ? "Hide Detailed Breakdown" : "Show Detailed Breakdown",
-      });
-      detailsToggle.onclick = () => {
-        this.showFullStats = !this.showFullStats;
-        this.render();
-      };
-
-      if (this.showFullStats) {
-        const breakdown = dashboard.createDiv({ attr: { style: "margin-top: 20px;" } });
-
-        const cols = "100px 1fr 50px 55px 75px 50px 65px 70px 75px";
-        const headerRow = breakdown.createDiv({
-          attr: {
-            style: `display: grid; grid-template-columns: ${cols}; gap: 8px; font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; padding: 0 0 6px; border-bottom: 1px solid var(--background-modifier-border); margin-bottom: 8px;`,
-          },
-        });
-        [
-          "Language",
-          "Progress",
-          "%",
-          "Keys",
-          "Done",
-          "Fuzzy",
-          "Words",
-          "Chars",
-          "Chars (no sp.)",
-        ].forEach((h) => {
-          headerRow.createDiv({ text: h });
-        });
-
-        const sourceLang = this.getSourceLanguage();
-        const languages = [
-          {
-            name: this.mainPoFile?.header.language || "Current",
-            stats: mainStats,
-            isMain: true,
-            isSource: (this.mainPoFile?.header.language || this.file?.basename) === sourceLang,
-          },
-          ...this.siblingPoFiles.map((s) => ({
-            name: s.language,
-            stats: s.stats,
-            isMain: false,
-            isSource: s.language === sourceLang,
-          })),
-        ];
-        const sortedLanguages = [...languages].sort((a, b) => {
-          if (a.isSource && !b.isSource) return -1;
-          if (!a.isSource && b.isSource) return 1;
-          if (a.isMain && !b.isMain) return -1;
-          if (!a.isMain && b.isMain) return 1;
-          return a.name.localeCompare(b.name);
-        });
-
-        sortedLanguages.forEach((lang) => {
-          const p =
-            lang.stats.total > 0 ? Math.round((lang.stats.translated / lang.stats.total) * 100) : 0;
-          const row = breakdown.createDiv({
-            attr: {
-              style: `display: grid; grid-template-columns: ${cols}; gap: 8px; align-items: center; font-size: 12px; padding: 4px 0;`,
-            },
-          });
-          const nameCell = row.createDiv({
-            attr: {
-              style: `display: flex; align-items: center; gap: 4px; font-weight: ${lang.isMain ? "600" : "normal"}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;`,
-            },
-          });
-          if (lang.isSource) {
-            setIcon(
-              nameCell.createDiv({
-                attr: { style: "color: var(--text-success); flex-shrink: 0;" },
-              }),
-              "shield-check",
-            );
-          }
-          nameCell.createSpan({ text: lang.name });
-          const miniBarBg = row.createDiv({
-            attr: {
-              style:
-                "height: 6px; background: var(--background-modifier-border); border-radius: 3px; overflow: hidden;",
-            },
-          });
-          miniBarBg.createDiv({
-            attr: { style: `width: ${p}%; background: var(--text-success); height: 100%;` },
-          });
-          row.createDiv({ text: `${p}%`, attr: { style: "color: var(--text-muted);" } });
-          row.createDiv({
-            text: lang.stats.total.toString(),
-            attr: { style: "color: var(--text-muted);" },
-          });
-          row.createDiv({
-            text: `${lang.stats.translated}/${lang.stats.total}`,
-            attr: { style: "color: var(--text-success);" },
-          });
-          row.createDiv({
-            text: lang.stats.fuzzy > 0 ? lang.stats.fuzzy.toString() : "—",
-            attr: {
-              style: `color: ${lang.stats.fuzzy > 0 ? "var(--text-warning)" : "var(--text-faint)"};`,
-            },
-          });
-          row.createDiv({
-            text: lang.stats.wordCount.toLocaleString(),
-            attr: { style: "color: var(--text-muted);" },
-          });
-          row.createDiv({
-            text: lang.stats.charCount.toLocaleString(),
-            attr: { style: "color: var(--text-muted);" },
-          });
-          row.createDiv({
-            text: lang.stats.charCountNoSpaces.toLocaleString(),
-            attr: { style: "color: var(--text-faint);" },
-          });
-        });
-      }
-    } else {
-      // Single file: show non-redundant extras only if meaningful
-      const extras: string[] = [];
-      if (displayStats.errors > 0)
-        extras.push(`${displayStats.errors} error${displayStats.errors > 1 ? "s" : ""}`);
-      if (displayStats.obsolete > 0) extras.push(`${displayStats.obsolete} obsolete`);
-      if (extras.length > 0) {
-        dashboard.createDiv({
-          text: extras.join(" · "),
-          attr: {
-            style:
-              "margin-top: 12px; font-size: 11px; color: var(--text-faint); text-align: center;",
-          },
-        });
-      }
+    if (mainStats.fuzzy > 0) {
+      this.renderStatBarSep(container);
+      this.renderStatBarItem(container, mainStats.fuzzy.toString(), "Fuzzy", "var(--text-warning)");
+    }
+    if (mainStats.errors > 0) {
+      this.renderStatBarSep(container);
+      this.renderStatBarItem(container, mainStats.errors.toString(), "Errors", "var(--text-error)");
+    }
+    if (mainStats.obsolete > 0) {
+      this.renderStatBarSep(container);
+      this.renderStatBarItem(container, mainStats.obsolete.toString(), "Obsolete", "var(--text-faint)");
     }
   }
 
-  private renderStatCard(
+  getLanguageStats(): LanguageStat[] {
+    if (!this.mainPoFile) return [];
+    const mainStats = getStatistics(this.mainPoFile);
+    const sourceLang = this.getSourceLanguage();
+    const mainName = this.mainPoFile.header.language || this.file?.basename || "Current";
+    const result: LanguageStat[] = [
+      { name: mainName, stats: mainStats, isSource: mainName === sourceLang },
+      ...this.siblingPoFiles.map((s) => ({
+        name: s.language,
+        stats: s.stats,
+        isSource: s.language === sourceLang,
+      })),
+    ];
+    return result.sort((a, b) => {
+      if (a.isSource && !b.isSource) return -1;
+      if (!a.isSource && b.isSource) return 1;
+      return a.name.localeCompare(b.name);
+    });
+  }
+
+  syncWithPanel(panel: POStatsView): void {
+    const allStats = this.getLanguageStats();
+    const stats =
+      this.includedLanguages.length > 0
+        ? allStats.filter((s) => this.includedLanguages.includes(s.name))
+        : allStats;
+    panel.setStats(stats);
+    const onChange: FilterChangeCallback = (key, values) => {
+      switch (key) {
+        case "includedStatuses": this.includedStatuses = values; break;
+        case "includedFlags": this.includedFlags = values; break;
+        case "includedComments": this.includedComments = values; break;
+        case "includedContexts": this.includedContexts = values; break;
+        case "includedLanguages": this.includedLanguages = values; this.render(); return;
+      }
+      this.rowRenderer?.();
+      panel.updateFilterOptions(this.buildFilterOptions());
+    };
+    panel.setFilterData(this.buildFilterOptions(), onChange);
+  }
+
+  private syncPanel(): void {
+    const existing = this.app.workspace.getLeavesOfType(PO_STATS_VIEW_TYPE);
+    const view = existing[0]?.view;
+    if (view instanceof POStatsView) {
+      this.syncWithPanel(view);
+    }
+  }
+
+  private buildFilterOptions(): FilterOptions {
+    const mainStats = getStatistics(this.mainPoFile);
+    const entries = this.mainPoFile?.entries ?? [];
+
+    const untranslatedCount = entries.filter((e) => {
+      if (isPluralEntry(e)) return !e.msgstr.some((s) => s.trim() !== "");
+      return e.msgstr.trim() === "";
+    }).length;
+
+    const flagQAs = this.plugin.settings.quickActions.filter(
+      (qa): qa is typeof qa & { flag: string } => qa.flag !== undefined,
+    );
+    const aggregatedFlagCounts = this.isProjectMode
+      ? this.getAggregatedFlagCounts()
+      : mainStats.flags;
+    const flagOptions = flagQAs.map((qa) => ({
+      flag: qa.flag,
+      label: qa.label,
+      count: aggregatedFlagCounts[qa.flag] ?? 0,
+    }));
+
+    const commentQAs = this.plugin.settings.quickActions.filter(
+      (qa): qa is typeof qa & { comment: string } => qa.comment !== undefined && !qa.flag,
+    );
+    let allComments: string[] = [];
+    if (this.isProjectMode) {
+      const allFiles = [this.mainPoFile, ...this.siblingPoFiles.map((s) => s.poFile)];
+      for (const poFile of allFiles) {
+        if (!poFile) continue;
+        for (const entry of poFile.entries) {
+          if (entry.comments?.translator) allComments.push(entry.comments.translator);
+        }
+      }
+    } else {
+      allComments = entries.map((e) => e.comments?.translator).filter((c): c is string => !!c);
+    }
+    allComments = [...new Set(allComments)].sort();
+
+    const commentOptions: FilterOptions["commentOptions"] = [];
+    const existingComments = new Set(allComments);
+    commentQAs.forEach((qa) => {
+      const count = allComments.filter((c) => c === qa.comment).length;
+      if (count > 0 || this.activeCommentFilter === qa.comment) {
+        commentOptions.push({ comment: qa.comment, label: qa.label, count });
+        existingComments.delete(qa.comment);
+      }
+    });
+    existingComments.forEach((c) => {
+      commentOptions.push({ comment: c, label: c, count: allComments.filter((x) => x === c).length });
+    });
+
+    const contextCounts = new Map<string, number>();
+    entries.forEach((e) => {
+      if (e.msgctxt) contextCounts.set(e.msgctxt, (contextCounts.get(e.msgctxt) ?? 0) + 1);
+    });
+    const contextOptions = [...contextCounts.entries()]
+      .map(([context, count]) => ({ context, count }))
+      .sort((a, b) => a.context.localeCompare(b.context));
+
+    const aggregatedStats = this.isProjectMode
+      ? this.getAggregatedProjectStats()
+      : { fuzzy: mainStats.fuzzy, comments: 0 };
+
+    const languageOptions = this.isProjectMode
+      ? this.getLanguageStats().map((l) => ({ language: l.name, isSource: l.isSource }))
+      : undefined;
+
+    return {
+      totalEntries: mainStats.total,
+      untranslatedCount,
+      translatedCount: mainStats.translated,
+      fuzzyCount: aggregatedStats.fuzzy,
+      flagOptions,
+      commentOptions,
+      contextOptions,
+      languageOptions,
+      current: {
+        includedStatuses: this.includedStatuses,
+        includedFlags: this.includedFlags,
+        includedComments: this.includedComments,
+        includedContexts: this.includedContexts,
+        includedLanguages: this.includedLanguages,
+      },
+    };
+  }
+
+  private async openFiltersPanel(): Promise<void> {
+    const existing = this.app.workspace.getLeavesOfType(PO_STATS_VIEW_TYPE);
+    let leaf = existing[0];
+    if (!leaf) {
+      leaf = this.app.workspace.getRightLeaf(false) ?? this.app.workspace.getLeaf("split");
+      await leaf.setViewState({ type: PO_STATS_VIEW_TYPE, active: true });
+    }
+    this.app.workspace.revealLeaf(leaf);
+    const view = leaf.view;
+    if (view instanceof POStatsView) {
+      this.syncWithPanel(view);
+      view.switchToFilters();
+    }
+  }
+
+  private async openStatsPanel(): Promise<void> {
+    const existing = this.app.workspace.getLeavesOfType(PO_STATS_VIEW_TYPE);
+    let leaf = existing[0];
+    if (!leaf) {
+      leaf = this.app.workspace.getRightLeaf(false) ?? this.app.workspace.getLeaf("split");
+      await leaf.setViewState({ type: PO_STATS_VIEW_TYPE, active: true });
+    }
+    this.app.workspace.revealLeaf(leaf);
+    const view = leaf.view;
+    if (view instanceof POStatsView) {
+      view.setStats(this.getLanguageStats());
+    }
+  }
+
+  private renderStatBarItem(
     parent: HTMLElement,
     val: string,
     label: string,
-    color: string,
-    icon: string,
-    subtitle?: string,
+    color = "var(--text-normal)",
   ): void {
-    const card = parent.createDiv({
-      attr: {
-        style:
-          "background: var(--background-primary); padding: 16px; border-radius: 8px; border: 1px solid var(--background-modifier-border); display: flex; flex-direction: column; gap: 4px;",
-      },
+    const item = parent.createDiv({
+      attr: { style: "display: flex; align-items: baseline; gap: 4px; white-space: nowrap;" },
     });
-    const top = card.createDiv({
-      attr: {
-        style: "display: flex; justify-content: space-between; align-items: center; width: 100%;",
-      },
-    });
-    top.createDiv({
+    item.createSpan({
       text: val,
-      attr: { style: `font-size: 22px; font-weight: bold; color: ${color};` },
+      attr: { style: `font-size: 13px; font-weight: 600; color: ${color};` },
     });
-    setIcon(top.createDiv({ attr: { style: "opacity: 0.2;" } }), icon);
-    card.createDiv({
+    item.createSpan({
       text: label,
-      attr: {
-        style:
-          "font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 600;",
-      },
+      attr: { style: "font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 500;" },
     });
-    if (subtitle)
-      card.createDiv({
-        text: subtitle,
-        attr: { style: "font-size: 10px; color: var(--text-faint);" },
-      });
   }
 
-  private renderGrid(container: HTMLElement, searchInput: HTMLInputElement): void {
+  private renderStatBarSep(parent: HTMLElement): void {
+    parent.createDiv({
+      attr: {
+        style:
+          "width: 1px; height: 16px; background: var(--background-modifier-border); margin: 0 12px; flex-shrink: 0;",
+      },
+    });
+  }
+
+  private renderGrid(container: HTMLElement): void {
     const detectPlaceholders = (text: string): string[] => {
       const patterns = this.plugin.settings.placeholderPatterns ?? [];
       const found: string[] = [];
@@ -1030,8 +956,9 @@ export class POView extends TextFileView {
       }
     };
 
-    const renderRows = (term: string = "") => {
+    const renderRows = () => {
       container.empty();
+      const term = this.activeSearch;
       const entries = this.mainPoFile?.entries;
       const isTranslated = (e: POEntry) => {
         if (isPluralEntry(e)) {
@@ -1041,9 +968,11 @@ export class POView extends TextFileView {
         }
       };
       let filtered = entries;
-      switch (this.activeFilter) {
-        case "untranslated":
-          filtered = entries.filter((e) => {
+
+      // Status: show only entries matching any included status (empty = no filter)
+      if (this.includedStatuses.length > 0) {
+        const matchesStatus = (e: POEntry, status: string): boolean => {
+          if (status === "untranslated") {
             if (!isTranslated(e)) return true;
             if (this.isProjectMode) {
               return this.siblingPoFiles.some((spf) => {
@@ -1054,76 +983,70 @@ export class POView extends TextFileView {
               });
             }
             return false;
-          });
-          break;
-        case "translated":
-          filtered = entries.filter((e) => isTranslated(e));
-          break;
-        case "fuzzy":
-          if (this.isProjectMode) {
-            filtered = entries.filter((e) => {
-              if ((e.flags ?? []).includes("fuzzy")) return true;
+          }
+          if (status === "translated") return isTranslated(e);
+          if (status === "fuzzy") {
+            if ((e.flags ?? []).includes("fuzzy")) return true;
+            if (this.isProjectMode) {
               return this.siblingPoFiles.some((spf) => {
                 const sib = spf.poFile.entries.find(
                   (s) => s.msgid === e.msgid && s.msgctxt === e.msgctxt,
                 );
                 return (sib?.flags ?? []).includes("fuzzy");
               });
-            });
-          } else {
-            filtered = entries.filter((e) => (e.flags ?? []).includes("fuzzy"));
-          }
-          break;
-        default:
-          if (this.activeFilter !== "all") {
-            if (this.isProjectMode) {
-              filtered = entries.filter((e) => {
-                if ((e.flags ?? []).includes(this.activeFilter as any)) return true;
-                return this.siblingPoFiles.some((spf) => {
-                  const sib = spf.poFile.entries.find(
-                    (s) => s.msgid === e.msgid && s.msgctxt === e.msgctxt,
-                  );
-                  return (sib?.flags ?? []).includes(this.activeFilter as any);
-                });
-              });
-            } else {
-              filtered = entries.filter((e) => (e.flags ?? []).includes(this.activeFilter as any));
             }
+            return false;
           }
-          break;
+          return false;
+        };
+        filtered = filtered.filter((e) => this.includedStatuses.some((s) => matchesStatus(e, s)));
       }
-      if (this.activeFlagFilter) {
+
+      // Flags: show only entries with any included flag (empty = no filter)
+      if (this.includedFlags.length > 0) {
+        if (this.isProjectMode) {
+          filtered = filtered.filter((e) =>
+            this.includedFlags.some((flag) => {
+              if ((e.flags ?? []).includes(flag as any)) return true;
+              return this.siblingPoFiles.some((spf) => {
+                const sib = spf.poFile.entries.find(
+                  (s) => s.msgid === e.msgid && s.msgctxt === e.msgctxt,
+                );
+                return (sib?.flags ?? []).includes(flag as any);
+              });
+            }),
+          );
+        } else {
+          filtered = filtered.filter((e) =>
+            this.includedFlags.some((f) => (e.flags ?? []).includes(f as any)),
+          );
+        }
+      }
+
+      // Comments: show only entries with any included comment (empty = no filter)
+      if (this.includedComments.length > 0) {
         if (this.isProjectMode) {
           filtered = filtered.filter((e) => {
-            if ((e.flags ?? []).includes(this.activeFlagFilter as any)) return true;
+            if (this.includedComments.some((c) => e.comments?.translator === c)) return true;
             return this.siblingPoFiles.some((spf) => {
               const sib = spf.poFile.entries.find(
                 (s) => s.msgid === e.msgid && s.msgctxt === e.msgctxt,
               );
-              return (sib?.flags ?? []).includes(this.activeFlagFilter as any);
+              return this.includedComments.some((c) => sib?.comments?.translator === c);
             });
           });
         } else {
-          filtered = filtered.filter((e) => (e.flags ?? []).includes(this.activeFlagFilter as any));
+          filtered = filtered.filter((e) =>
+            this.includedComments.some((c) => e.comments?.translator === c),
+          );
         }
       }
-      if (this.activeCommentFilter) {
-        if (this.isProjectMode) {
-          filtered = filtered.filter((e) => {
-            if (e.comments?.translator === this.activeCommentFilter) return true;
-            return this.siblingPoFiles.some((spf) => {
-              const sib = spf.poFile.entries.find(
-                (s) => s.msgid === e.msgid && s.msgctxt === e.msgctxt,
-              );
-              return sib?.comments?.translator === this.activeCommentFilter;
-            });
-          });
-        } else {
-          filtered = filtered.filter((e) => e.comments?.translator === this.activeCommentFilter);
-        }
-      }
-      if (this.activeContext) {
-        filtered = filtered.filter((e) => e.msgctxt === this.activeContext);
+
+      // Contexts: show only entries in any included context (empty = no filter)
+      if (this.includedContexts.length > 0) {
+        filtered = filtered.filter((e) =>
+          this.includedContexts.some((ctx) => e.msgctxt === ctx),
+        );
       }
       if (term) {
         const t = term.toLowerCase();
@@ -1133,7 +1056,7 @@ export class POView extends TextFileView {
         });
       }
       const isPOT = this.isPOTFile;
-      const languages = isPOT
+      let languages = isPOT
         ? []
         : [
             { id: "main", label: this.mainPoFile?.header.language || "Current" },
@@ -1141,6 +1064,9 @@ export class POView extends TextFileView {
               ? this.siblingPoFiles.map((s, i) => ({ id: `spf-${i}`, label: s.language }))
               : []),
           ];
+      if (this.isProjectMode && this.includedLanguages.length > 0) {
+        languages = languages.filter((l) => this.includedLanguages.includes(l.label));
+      }
       const gridTemplate = isPOT ? "1fr 80px" : `250px repeat(${languages.length}, 1fr) 120px`;
 
       const sourceLang = this.isProjectMode
@@ -1259,8 +1185,13 @@ export class POView extends TextFileView {
         const placeholders = detectPlaceholders(entry.msgid);
         const mainLang = this.mainPoFile?.header.language || this.file?.basename;
 
+        const mainLangVisible =
+          !this.isProjectMode ||
+          this.includedLanguages.length === 0 ||
+          this.includedLanguages.includes(mainLang ?? "");
+
         // Translation cells — hidden for POT files
-        if (!isPOT) {
+        if (!isPOT && mainLangVisible) {
           if (isPluralEntry(entry)) {
             const nplurals = this.getNplurals();
             const labels = getPluralFormLabels(nplurals);
@@ -1315,6 +1246,11 @@ export class POView extends TextFileView {
         // Sibling translation cells — never shown for POT
         if (!isPOT && this.isProjectMode) {
           this.siblingPoFiles.forEach((spf) => {
+            if (
+              this.includedLanguages.length > 0 &&
+              !this.includedLanguages.includes(spf.language)
+            )
+              return;
             const siblingEntry = spf.poFile.entries.find(
               (e) => e.msgid === entry.msgid && e.msgctxt === entry.msgctxt,
             );
@@ -1464,7 +1400,7 @@ export class POView extends TextFileView {
         }
       });
     };
-    searchInput.oninput = () => renderRows(searchInput.value);
+    this.rowRenderer = renderRows;
     renderRows();
   }
 
