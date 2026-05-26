@@ -1,6 +1,6 @@
 {
   "name": "obsidian-po-editor",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Plugin for editing PO (Gettext) translation files with format conversion support",
   "keywords": [
     "gettext",
