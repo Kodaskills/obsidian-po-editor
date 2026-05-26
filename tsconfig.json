@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "ES2024", "DOM"],
+
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "noEmit": true,
+
+    "paths": {
+      "@/*": ["./src/*"],
+      "@application/*": ["./src/application/*"],
+      "@domain/*": ["./src/domain/*"],
+      "@infrastructure/*": ["./src/infrastructure/*"],
+      "@presentation/*": ["./src/presentation/*"]
+    }
+  },
+  "include": ["./src/**/*.ts"]
+}

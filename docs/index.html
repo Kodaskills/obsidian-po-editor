@@ -1,0 +1,1305 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-WS49FDBV");
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PO Editor — Obsidian Plugin</title>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <script>
+      document.documentElement.classList.add("js-reveal-ready");
+    </script>
+  </head>
+  <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-WS49FDBV"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <div id="root" class="page">
+      <div class="bg-grid"></div>
+      <div class="bg-glow"></div>
+      <header class="nav-sticky">
+        <div class="container">
+          <nav class="nav">
+            <a href="#" class="nav-logo">
+              <img
+                src="assets/img/logo.svg"
+                alt="PO Editor"
+                class="logo-svg"
+                width="32"
+                height="32"
+              />
+              <span class="logo-name">PO Editor</span>
+            </a>
+            <div class="nav-links">
+              <a href="#features" class="link-nav">Features</a>
+              <a href="#install" class="link-nav">Install</a>
+              <a href="#faq" class="link-nav">FAQ</a>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://github.com/kodaskills/obsidian-po-editor"
+                class="link-nav nav-github-btn"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.3 3.6 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.3-3.2-.2-.3-.6-1.5.1-3.2 0 0 1-.3 3.4 1.2a11.5 11.5 0 0 1 6.2 0c2.4-1.6 3.4-1.2 3.4-1.2.7 1.7.2 2.9.1 3.2.8.8 1.3 1.9 1.3 3.2 0 4.6-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A12 12 0 0 0 12 .3"
+                  />
+                </svg>
+                GitHub</a
+              >
+              <div class="theme-switcher" role="group" aria-label="Color theme">
+                <button class="theme-btn active" data-theme-btn="dark" title="Dark">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </svg>
+                </button>
+                <button class="theme-btn" data-theme-btn="system" title="System">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="4" />
+                    <path
+                      d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
+                    />
+                  </svg>
+                </button>
+                <button class="theme-btn" data-theme-btn="light" title="Light">
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="5" />
+                    <path
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      fill="none"
+                      d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </header>
+      <div class="container">
+        <section class="hero">
+          <h1 class="hero-title">
+            Translate without<br />
+            <span class="hero-title-italic"
+              >leaving Obsidian
+              <svg viewBox="0 0 600 14" preserveAspectRatio="none" class="hero-underline">
+                <path
+                  d="M2 8 Q 150 2 300 8 T 598 7"
+                  stroke="var(--accent)"
+                  stroke-width="2.5"
+                  fill="none"
+                  stroke-linecap="round"
+                /></svg
+            ></span>
+          </h1>
+          <p class="hero-subtitle">
+            Edit PO/Gettext files entry-by-entry, validate plurals, and convert to XLIFF, ARB, JSON,
+            YAML, or ICU &mdash; all from a vault you already know.
+          </p>
+          <div class="hero-cta-row">
+            <a href="#install" class="hero-btn btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 2 4 7l3 12 5 3 5-3 3-12-8-5z"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M12 2v9l5 11M12 11l-5-4M12 11l8-4"
+                  stroke="currentColor"
+                  stroke-width="1.2"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Install in Obsidian</a
+            >
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://github.com/kodaskills/obsidian-po-editor"
+              class="btn-secondary"
+              >View on GitHub &rarr;</a
+            >
+          </div>
+          <div id="v1-hero-content" class="hero-visual">
+            <div class="v1-root">
+              <div class="v1-glow"></div>
+              <div class="v1-inner">
+                <img
+                  src="assets/img/kawaiImg.png"
+                  alt="A kawaii octopus translator and red panda exchanging greetings"
+                  class="v1-img"
+                />
+                <span
+                  class="v1-bubble"
+                  style="
+                    left: 8%;
+                    top: 18%;
+                    --r: -6deg;
+                    --c: #fb7185;
+                    animation-duration: 4s;
+                    --d: 0s;
+                  "
+                  >مرحبا</span
+                >
+                <span
+                  class="v1-bubble"
+                  style="left: 2%; top: 38%; --r: 4deg; --c: #a78bfa; --d: 1.4s"
+                  >안녕</span
+                >
+                <span
+                  class="v1-bubble"
+                  style="left: 14%; top: 60%; --r: -3deg; --c: #34d399; --d: 0.7s"
+                  >Olá</span
+                >
+                <span
+                  class="v1-bubble"
+                  style="left: 78%; top: 12%; --r: 5deg; --c: #f59e0b; --d: 0.3s"
+                  >Hej!</span
+                >
+                <span
+                  class="v1-bubble"
+                  style="left: 90%; top: 32%; --r: -4deg; --c: #06b6d4; --d: 1s"
+                  >Ciao</span
+                >
+                <span
+                  class="v1-bubble"
+                  style="left: 82%; top: 60%; --r: 3deg; --c: #ec4899; --d: 1.6s"
+                  >안녕!</span
+                >
+                <span class="v1-drift" style="left: 30%; top: 44%; --d: 0s" aria-hidden="true"
+                  >💗</span
+                >
+                <span class="v1-drift" style="left: 38%; top: 48%; --d: 0.6s" aria-hidden="true"
+                  >✨</span
+                >
+                <span class="v1-drift" style="left: 46%; top: 44%; --d: 1.2s" aria-hidden="true"
+                  >🌐</span
+                >
+                <span class="v1-drift" style="left: 54%; top: 48%; --d: 1.8s" aria-hidden="true"
+                  >@</span
+                >
+                <span class="v1-drift" style="left: 62%; top: 44%; --d: 2.4s" aria-hidden="true"
+                  >⭐</span
+                >
+                <span
+                  class="v1-sparkle"
+                  style="left: 24%; top: 28%; --sd: 0s; width: 14px; height: 14px"
+                  aria-hidden="true"
+                  ><svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0L14 9L24 12L14 15L12 24L10 15L0 12L10 9Z" /></svg
+                ></span>
+                <span
+                  class="v1-sparkle"
+                  style="left: 46%; top: 20%; --sd: 0.8s; width: 10px; height: 10px"
+                  aria-hidden="true"
+                  ><svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0L14 9L24 12L14 15L12 24L10 15L0 12L10 9Z" /></svg
+                ></span>
+                <span
+                  class="v1-sparkle"
+                  style="left: 62%; top: 32%; --sd: 1.4s; width: 12px; height: 12px"
+                  aria-hidden="true"
+                  ><svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0L14 9L24 12L14 15L12 24L10 15L0 12L10 9Z" /></svg
+                ></span>
+                <span
+                  class="v1-sparkle"
+                  style="left: 74%; top: 24%; --sd: 2s; width: 14px; height: 14px"
+                  aria-hidden="true"
+                  ><svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0L14 9L24 12L14 15L12 24L10 15L0 12L10 9Z" /></svg
+                ></span>
+                <span
+                  class="v1-sparkle"
+                  style="left: 88%; top: 50%; --sd: 1.2s; width: 10px; height: 10px"
+                  aria-hidden="true"
+                  ><svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0L14 9L24 12L14 15L12 24L10 15L0 12L10 9Z" /></svg
+                ></span>
+                <span
+                  class="v1-sparkle"
+                  style="left: 38%; top: 70%; --sd: 0.5s; width: 12px; height: 12px"
+                  aria-hidden="true"
+                  ><svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0L14 9L24 12L14 15L12 24L10 15L0 12L10 9Z" /></svg
+                ></span>
+              </div>
+              <div class="v1-caption">
+                <div class="v1-msgid-box">
+                  <div class="v1-cap-label">MSGID &middot; EN</div>
+                  <div class="v1-cap-text">&ldquo;Hello, world!&rdquo;</div>
+                </div>
+                <div class="v1-arrow-wrap" aria-hidden="true">
+                  <svg viewBox="0 0 70 26" width="70" height="26" style="overflow: visible">
+                    <path
+                      d="M 0 13 L 60 13"
+                      stroke="var(--mute)"
+                      stroke-width="1.5"
+                      stroke-dasharray="3 4"
+                      fill="none"
+                      opacity="0.5"
+                    />
+                    <path
+                      d="M 56 7 L 64 13 L 56 19"
+                      stroke="var(--accent)"
+                      stroke-width="2"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <circle
+                      r="3"
+                      fill="var(--accent)"
+                      style="
+                        offset-path: path(&quot;M 0 13 L 60 13&quot;);
+                        offset-distance: 0%;
+                        animation: v1Dot 2s linear infinite;
+                      "
+                    />
+                  </svg>
+                </div>
+                <div class="v1-right-box" id="v1-right-box">
+                  <div class="v1-cap-label v1-right-lang" id="v1-right-lang" style="direction: ltr">
+                    MSGSTR &middot; EN
+                  </div>
+                  <div class="v1-cap-text" id="v1-right-text">&ldquo;Hello, world!&rdquo;</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="marquee-section">
+          <div id="v1-marquee-track" class="marquee-track">
+            <span class="marquee-item"
+              ><span class="marquee-bullet">&#10022;</span>PO &#8596; XLIFF</span
+            >
+            <span class="marquee-item"
+              ><span class="marquee-bullet">&#10022;</span>PO &#8596; ARB</span
+            >
+            <span class="marquee-item"
+              ><span class="marquee-bullet">&#10022;</span>PO &#8596; JSON</span
+            >
+            <span class="marquee-item"
+              ><span class="marquee-bullet">&#10022;</span>PO &#8596; YAML</span
+            >
+            <span class="marquee-item"
+              ><span class="marquee-bullet">&#10022;</span>PO &#8596; ICU</span
+            >
+            <span class="marquee-item"
+              ><span class="marquee-bullet">&#10022;</span>plural forms</span
+            >
+            <span class="marquee-item"><span class="marquee-bullet">&#10022;</span>msgctxt</span>
+            <span class="marquee-item"><span class="marquee-bullet">&#10022;</span>fuzzy flag</span>
+            <span class="marquee-item"><span class="marquee-bullet">&#10022;</span>c-format</span>
+            <span class="marquee-item"
+              ><span class="marquee-bullet">&#10022;</span>obsolete entries</span
+            >
+            <span class="marquee-item"
+              ><span class="marquee-bullet">&#10022;</span>project mode</span
+            >
+            <span class="marquee-item"
+              ><span class="marquee-bullet">&#10022;</span>BRAT support</span
+            >
+            <span class="marquee-item"><span class="marquee-bullet">&#10022;</span>CodeMirror</span>
+            <span class="marquee-item"><span class="marquee-bullet">&#10022;</span>TypeScript</span>
+          </div>
+        </section>
+        <section id="features" class="section">
+          <div class="section-header">
+            <span class="label">What's inside</span>
+            <h2 class="section-title">
+              A localization workspace,
+              <span class="italic-accent">not a glorified text editor.</span>
+            </h2>
+          </div>
+          <div class="features-grid">
+            <div class="feat-card">
+              <div class="card-head">
+                <div class="card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <g
+                      stroke="var(--accent)"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <rect x="3" y="4" width="18" height="3" rx="1" />
+                      <rect x="3" y="10.5" width="18" height="3" rx="1" />
+                      <rect x="3" y="17" width="18" height="3" rx="1" />
+                    </g>
+                  </svg>
+                </div>
+                <span class="card-num">01</span>
+              </div>
+              <h3 class="card-title">Dual-mode editing</h3>
+              <p class="card-body">
+                Browse entries as a structured list &mdash; ID, status, and context at a glance.
+                Click any entry to open the editor panel. Switch to raw PO source for direct access.
+              </p>
+            </div>
+            <div class="feat-card">
+              <div class="card-head">
+                <div class="card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <g
+                      stroke="var(--accent)"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M4 5h16M7 12h10M10 19h4" />
+                    </g>
+                  </svg>
+                </div>
+                <span class="card-num">02</span>
+              </div>
+              <h3 class="card-title">Smart filtering</h3>
+              <p class="card-body">
+                Filter by status, format flag, comment, or context. Find the 12 fuzzy entries hiding
+                in a 4,000-entry catalog in seconds.
+              </p>
+            </div>
+            <div class="feat-card">
+              <div class="card-head">
+                <div class="card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <g
+                      stroke="var(--accent)"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="9" opacity="0.3" />
+                      <path d="M12 3v9l5 5" />
+                      <path d="M8 12h4" />
+                    </g>
+                  </svg>
+                </div>
+                <span class="card-num">03</span>
+              </div>
+              <h3 class="card-title">Focus mode</h3>
+              <p class="card-body">
+                Step through entries one by one with keyboard shortcuts. No distractions, no mouse
+                &mdash; pure kilometer translation mode for translators who need to ship.
+              </p>
+            </div>
+            <div class="feat-card">
+              <div class="card-head">
+                <div class="card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <g
+                      stroke="var(--accent)"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M5 12l4 4L20 6" />
+                      <circle cx="12" cy="12" r="10" opacity="0.3" />
+                    </g>
+                  </svg>
+                </div>
+                <span class="card-num">04</span>
+              </div>
+              <h3 class="card-title">Entry validation</h3>
+              <p class="card-body">
+                Flag fuzzy entries, missing translations, and move obsolete strings out of your
+                active catalog &mdash; keep your PO files clean without leaving Obsidian.
+              </p>
+            </div>
+            <div class="feat-card">
+              <div class="card-head">
+                <div class="card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <g
+                      stroke="var(--accent)"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="8" cy="12" r="3" />
+                      <circle cx="16" cy="12" r="3" />
+                      <path d="M5 6l-2 2M21 18l-2-2" />
+                    </g>
+                  </svg>
+                </div>
+                <span class="card-num">05</span>
+              </div>
+              <h3 class="card-title">Plurals done right</h3>
+              <p class="card-body">
+                Pick a language when creating a PO file and the correct
+                <code>Plural-Forms</code> header is written automatically from CLDR rules.
+                First-class support for msgid_plural with all required forms per locale. Integrity
+                checks catch missing or mismatched forms before you ship.
+              </p>
+            </div>
+            <div class="feat-card">
+              <div class="card-head">
+                <div class="card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <g
+                      stroke="var(--accent)"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M3 3v18h18" />
+                      <path d="M18 9l-5-5-4 4-3-3" />
+                    </g>
+                  </svg>
+                </div>
+                <span class="card-num">06</span>
+              </div>
+              <h3 class="card-title">Stats &amp; export panel</h3>
+              <p class="card-body">
+                Track progress per language &mdash; translated, fuzzy, obsolete counts &mdash; then
+                export to any format from the sidebar.
+              </p>
+            </div>
+            <div class="feat-card">
+              <div class="card-head">
+                <div class="card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <g
+                      stroke="var(--accent)"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M4 8h12l-3-3M20 16H8l3 3" />
+                    </g>
+                  </svg>
+                </div>
+                <span class="card-num">07</span>
+              </div>
+              <h3 class="card-title">Multi-format conversion</h3>
+              <p class="card-body">
+                Round-trip to XLIFF, ARB, ARB Enhanced, JSON, YAML, and ICU MessageFormat without
+                losing flags or comments.
+              </p>
+            </div>
+            <div class="feat-card">
+              <div class="card-head">
+                <div class="card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <g
+                      stroke="var(--accent)"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                      />
+                    </g>
+                  </svg>
+                </div>
+                <span class="card-num">08</span>
+              </div>
+              <h3 class="card-title">Project mode</h3>
+              <p class="card-body">
+                Treat a folder of PO files as one project. Switch locales, compare progress, sync
+                settings across the set.
+              </p>
+            </div>
+            <div class="feat-card">
+              <div class="card-head">
+                <div class="card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <g
+                      stroke="var(--accent)"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                    </g>
+                  </svg>
+                </div>
+                <span class="card-num">09</span>
+              </div>
+              <h3 class="card-title">Fast on large catalogs</h3>
+              <p class="card-body">
+                No lag on thousands of entries. The list renders instantly whether you're editing 50
+                strings or 50,000 &mdash; your vault stays responsive.
+              </p>
+            </div>
+            <div class="feat-card">
+              <div class="card-head">
+                <div class="card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <g
+                      stroke="var(--accent)"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"
+                      />
+                      <circle cx="7" cy="7" r="1.5" fill="var(--accent)" stroke="none" />
+                    </g>
+                  </svg>
+                </div>
+                <span class="card-num">10</span>
+              </div>
+              <h3 class="card-title">Quick actions</h3>
+              <p class="card-body">
+                Define labeled buttons that apply flags or translator comments in one click. Assign
+                a PO flag (e.g. <code>#, c-format</code>), a comment, and a color. Buttons appear in
+                the editor panel &mdash; tag entries without breaking your translation flow.
+              </p>
+            </div>
+            <div class="feat-card">
+              <div class="card-head">
+                <div class="card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24">
+                    <g
+                      stroke="var(--accent)"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                      <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                      />
+                    </g>
+                  </svg>
+                </div>
+                <span class="card-num">11</span>
+              </div>
+              <h3 class="card-title">Configurable to your workflow</h3>
+              <p class="card-body">
+                Dock the editor panel top, bottom, left, or right. Define custom placeholder
+                patterns (<code>%s</code>, <code>%(key)s</code>, <code>%1$d</code>) that render as
+                clickable chips in translation cells. Auto-check headers on open or keep it on
+                demand.
+              </p>
+            </div>
+            <div class="feat-card feat-card--cta">
+              <div class="card-head">
+                <div class="card-icon">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="var(--accent)"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                </div>
+                <span class="card-num">?</span>
+              </div>
+              <h3 class="card-title">Need a feature?</h3>
+              <p class="card-body">
+                Missing something? An Idea for better UX? Open a feature request on GitHub &mdash;
+                describe your use case and we&rsquo;ll take a look.
+              </p>
+              <a
+                href="https://github.com/kodaskills/obsidian-po-editor/issues/new?template=feature_request.yml"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-feat-request"
+                >Request a feature &rarr;</a
+              >
+            </div>
+          </div>
+        </section>
+        <section id="ui-showcase" class="section">
+          <div class="section-header">
+            <span class="label">In action</span>
+            <h2 class="section-title">
+              What it looks like <span class="italic-accent">inside Obsidian.</span>
+            </h2>
+          </div>
+          <div class="obsidian-window">
+            <div class="obsidian-titlebar">
+              <div class="obsidian-window-dots">
+                <span class="obsidian-window-dot close"></span>
+                <span class="obsidian-window-dot minimize"></span>
+                <span class="obsidian-window-dot maximize"></span>
+              </div>
+              <span class="obsidian-window-title">fr.po &mdash; PO Editor</span>
+            </div>
+            <div class="obsidian-panels">
+              <div class="obsidian-sidebar-panel">
+                <div class="sidebar-folder">translations/</div>
+                <div class="sidebar-file-row active">
+                  <span class="file-lang">FR</span>
+                  <span class="sidebar-file-name">fr.po</span>
+                  <span class="sidebar-status-dot green"></span>
+                </div>
+                <div class="sidebar-file-row">
+                  <span class="file-lang">EN</span>
+                  <span class="sidebar-file-name">en.po</span>
+                </div>
+                <div class="sidebar-file-row">
+                  <span class="file-lang">DE</span>
+                  <span class="sidebar-file-name">de.po</span>
+                  <span class="sidebar-status-dot amber"></span>
+                </div>
+                <div class="sidebar-file-row">
+                  <span class="file-lang">JA</span>
+                  <span class="sidebar-file-name">ja.po</span>
+                  <span class="sidebar-status-dot grey"></span>
+                </div>
+              </div>
+              <div class="obsidian-main-panel">
+                <!-- Statistics bar -->
+                <div class="mock-sb">
+                  <span class="mock-sb-label">STATISTICS</span>
+                  <div class="mock-sb-bar">
+                    <div class="mock-sb-bar-fill" style="width: 68%"></div>
+                  </div>
+                  <span class="mock-sb-pct">68%</span>
+                  <span class="mock-sb-div"></span>
+                  <span class="mock-sb-stat"><span class="dot-green"></span>67</span>
+                  <span class="mock-sb-stat dim"><span class="dot-grey"></span>31</span>
+                  <span class="mock-sb-stat amber"><span class="dot-amber"></span>4</span>
+                  <span class="mock-sb-div"></span>
+                  <span class="mock-sb-keys">98 KEYS</span>
+                  <span class="mock-sb-ref">REF: <span>JA &middot; Japanese</span></span>
+                </div>
+                <!-- Message list (msgid only) -->
+                <div class="mock-msg-list">
+                  <div class="mock-msg-row">
+                    <span class="dot-green"></span
+                    ><span class="mock-msg-id">Center Complete Image</span>
+                  </div>
+                  <div class="mock-msg-row selected">
+                    <span class="dot-green"></span
+                    ><span class="mock-msg-id">Download Add Text</span>
+                  </div>
+                  <div class="mock-msg-row">
+                    <span class="dot-grey"></span
+                    ><span class="mock-msg-id">Running Pause Available</span>
+                  </div>
+                  <div class="mock-msg-row">
+                    <span class="dot-green"></span
+                    ><span class="mock-msg-id">Succeeded Visible</span>
+                  </div>
+                  <div class="mock-msg-row">
+                    <span class="dot-green"></span
+                    ><span class="mock-msg-id">Center Forward Download</span>
+                  </div>
+                  <div class="mock-msg-row">
+                    <span class="dot-amber"></span
+                    ><span class="mock-msg-id">Star Failed Pending</span>
+                  </div>
+                </div>
+                <!-- Split editor: ref lang left, target lang right -->
+                <div class="mock-ep-split">
+                  <div class="mock-ep ref">
+                    <span class="mock-ep-lang">Japanese</span>
+                    <span class="mock-ep-msgid">MSGID <em>Download Add Text</em></span>
+                    <span class="mock-ep-src">ダウンロードテキストを追加する</span>
+                  </div>
+                  <div class="mock-ep target">
+                    <span class="mock-ep-lang">French</span>
+                    <div class="mock-ep-textarea">Télécharger Ajouter Texte</div>
+                    <div class="mock-ep-comment">Translator comment&hellip;</div>
+                    <div class="mock-ep-nav">
+                      <span class="mock-ep-pos">2 / 98 &middot; 37 ch</span>
+                      <button class="mock-ep-btn">&laquo; Previous</button>
+                      <button class="mock-ep-btn primary">Next &raquo;</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="obsidian-stats-panel">
+                <div class="mock-stats-tabs">
+                  <button class="mock-stats-tab active">Stats</button>
+                  <button class="mock-stats-tab">Filters</button>
+                  <button class="mock-stats-tab">Export</button>
+                  <button class="mock-stats-tab">Sync</button>
+                </div>
+                <div class="mock-proj-hd">PROJECT PROGRESS</div>
+                <div class="mock-proj-row">
+                  <div class="mock-progress" style="flex: 1">
+                    <div class="mock-progress-fill" style="width: 58%"></div>
+                  </div>
+                  <span class="mock-proj-pct">58%</span>
+                </div>
+                <div class="mock-proj-stats">
+                  <div class="mock-proj-stat"><span>Translated</span><span>1,580</span></div>
+                  <div class="mock-proj-stat"><span>Untranslated</span><span>1,138</span></div>
+                  <div class="mock-proj-stat amber"><span>Fuzzy</span><span>247</span></div>
+                  <div class="mock-proj-stat"><span>Languages</span><span>27</span></div>
+                </div>
+                <div class="mock-lang-rows">
+                  <div class="mock-lang-row">
+                    <span class="mock-lang-code">FR</span>
+                    <div class="mock-progress" style="flex: 1">
+                      <div class="mock-progress-fill" style="width: 68%"></div>
+                    </div>
+                    <span class="mock-progress-pct">68%</span>
+                  </div>
+                  <div class="mock-lang-row">
+                    <span class="mock-lang-code">JA</span>
+                    <div class="mock-progress" style="flex: 1">
+                      <div class="mock-progress-fill" style="width: 66%"></div>
+                    </div>
+                    <span class="mock-progress-pct">66%</span>
+                  </div>
+                  <div class="mock-lang-row">
+                    <span class="mock-lang-code">AR</span>
+                    <div class="mock-progress" style="flex: 1">
+                      <div class="mock-progress-fill" style="width: 51%"></div>
+                    </div>
+                    <span class="mock-progress-pct">51%</span>
+                  </div>
+                  <div class="mock-lang-row">
+                    <span class="mock-lang-code" style="color: var(--mute)">+24</span>
+                    <span style="font-family: var(--font-mono); font-size: 9px; color: var(--mute)"
+                      >more languages&hellip;</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section-alt">
+          <div class="two-col">
+            <div>
+              <span class="label">The shape of a PO file</span>
+              <h2 class="po-title">Plain text, structured.</h2>
+              <p class="po-body">
+                Every entry has context, source, translation, optional plurals, flags, and
+                translator notes. PO Editor renders all of it as a structured form &mdash; but the
+                underlying file stays a perfectly clean .po.
+              </p>
+              <div class="po-features">
+                <div class="po-feature-item">
+                  <code class="code-tag">msgctxt</code>
+                  <span class="feature-desc"
+                    >Disambiguates same-text-different-meaning entries</span
+                  >
+                </div>
+                <div class="po-feature-item">
+                  <code class="code-tag">msgid_plural</code>
+                  <span class="feature-desc">CLDR plural forms with full integrity checks</span>
+                </div>
+                <div class="po-feature-item">
+                  <code class="code-tag">#, fuzzy</code>
+                  <span class="feature-desc">Mark entries that need a human review</span>
+                </div>
+                <div class="po-feature-item">
+                  <code class="code-tag">#: source.ts:42</code>
+                  <span class="feature-desc">Jump straight to where the string lives in code</span>
+                </div>
+              </div>
+            </div>
+            <pre
+              class="code-block"
+            ><span class="code-comment"># Translator: claude &middot; 2 hours ago
+#: src/views/inbox.tsx:91
+</span><span class="accent">msgctxt </span><span class="code-string-purple">"inbox"</span><span class="code-keyword">
+msgid </span><span class="code-string-yellow">"You have one unread message"</span><span class="code-keyword">
+msgid_plural </span><span class="code-string-yellow">"You have {count} unread messages"</span><span class="code-string-green">
+msgstr[0] </span><span class="code-string-yellow">"Tu as un message non lu"</span><span class="code-string-green">
+msgstr[1] </span><span class="code-string-yellow">"Tu as {count} messages non lus"</span><span class="code-comment">
+
+#, fuzzy, c-format
+#: src/net/client.ts:77
+</span><span class="accent">msgctxt </span><span class="code-string-purple">"errors"</span><span class="code-keyword">
+msgid </span><span class="code-string-yellow">"Could not connect to %s"</span><span class="code-string-green">
+msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible"</span></pre>
+          </div>
+        </section>
+        <section class="section">
+          <div class="steps-header">
+            <span class="label">How it works</span>
+            <h2 class="section-title-lg">
+              Four steps from <span class="italic-accent">blank</span> to
+              <span class="italic-accent">shipped.</span>
+            </h2>
+          </div>
+          <div class="steps-grid">
+            <div class="step-row">
+              <span class="step-num">01</span>
+              <h3 class="step-title">Open or create</h3>
+              <p class="step-desc">
+                Click any <code>.po</code> file in the file explorer to open it in the editor, or
+                use the PO ribbon button to create a new file. Pick a language and an output folder.
+              </p>
+              <div class="step-kbd-wrap"><kbd class="kbd">&#8984;P</kbd></div>
+            </div>
+            <div class="step-row">
+              <span class="step-num">02</span>
+              <h3 class="step-title">Edit in list view</h3>
+              <p class="step-desc">
+                Click any entry in the list to open the editor panel &mdash; set msgstr, toggle
+                flags, add comments. Or jump to raw mode for direct source editing.
+              </p>
+              <div></div>
+            </div>
+            <div class="step-row">
+              <span class="step-num">03</span>
+              <h3 class="step-title">Validate</h3>
+              <p class="step-desc">
+                Run "Validate PO File" to scan for empty msgstr, fuzzy entries, and obsolete
+                strings. Flag issues before committing.
+              </p>
+              <div></div>
+            </div>
+            <div class="step-row">
+              <span class="step-num">04</span>
+              <h3 class="step-title">Convert &amp; export</h3>
+              <p class="step-desc">
+                Round-trip to XLIFF for translators, ARB for Flutter, JSON/YAML for web stacks, or
+                ICU for runtime use.
+              </p>
+              <div></div>
+            </div>
+          </div>
+        </section>
+        <section class="section">
+          <div class="formats-layout">
+            <div>
+              <span class="label">Formats</span>
+              <h2 class="formats-title">
+                Eight formats. <span class="italic-accent">One source.</span>
+              </h2>
+              <p class="formats-body">
+                Comments, flags, and source references survive every conversion (when you want them
+                to).
+              </p>
+            </div>
+            <div class="formats-grid">
+              <div class="format-item-featured">
+                <div>
+                  <div class="format-name">Gettext PO</div>
+                  <div class="format-ext">.po</div>
+                </div>
+                <span class="format-badge-primary">R/W</span>
+              </div>
+              <div class="format-item">
+                <div>
+                  <div class="format-name">Gettext POT</div>
+                  <div class="format-ext">.pot</div>
+                </div>
+                <span class="format-badge">R/W</span>
+              </div>
+              <div class="format-item">
+                <div>
+                  <div class="format-name">XLIFF</div>
+                  <div class="format-ext">.xliff</div>
+                </div>
+                <span class="format-badge">PO &#8596;</span>
+              </div>
+              <div class="format-item">
+                <div>
+                  <div class="format-name">Flutter ARB</div>
+                  <div class="format-ext">.arb</div>
+                </div>
+                <span class="format-badge">PO &#8596;</span>
+              </div>
+              <div class="format-item">
+                <div>
+                  <div class="format-name">ARB Enhanced</div>
+                  <div class="format-ext">.arb &middot; with metadata</div>
+                </div>
+                <span class="format-badge">PO &#8596;</span>
+              </div>
+              <div class="format-item">
+                <div>
+                  <div class="format-name">JSON</div>
+                  <div class="format-ext">.json</div>
+                </div>
+                <span class="format-badge">PO &#8596;</span>
+              </div>
+              <div class="format-item">
+                <div>
+                  <div class="format-name">YAML</div>
+                  <div class="format-ext">.yaml</div>
+                </div>
+                <span class="format-badge">PO &#8596;</span>
+              </div>
+              <div class="format-item">
+                <div>
+                  <div class="format-name">ICU MessageFormat</div>
+                  <div class="format-ext">.json</div>
+                </div>
+                <span class="format-badge">PO &#8596;</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="install" class="section">
+          <div class="install-header">
+            <span class="label">Installation</span>
+            <h2 class="section-title-lg">Three ways in.</h2>
+            <p class="install-meta">Desktop only &middot; Obsidian 0.15.0+</p>
+          </div>
+          <div class="tab-bar" id="install-tab-bar">
+            <button class="tab-btn" data-tab="0">
+              <span>Community Plugins <span class="badge-soon">coming soon</span></span
+              ><span class="tab-label">not yet listed</span>
+            </button>
+            <button class="tab-btn active" data-tab="1">
+              <span>BRAT (beta)</span><span class="tab-label">available now</span>
+            </button>
+            <button class="tab-btn" data-tab="2">
+              <span>Manual</span><span class="tab-label">for the curious</span>
+            </button>
+          </div>
+          <div id="install-tab-0" class="tab-panel">
+            <div class="install-step">
+              <div class="install-step-head">
+                <span class="install-step-num">01</span>
+                <h3 class="install-step-title">Open Obsidian</h3>
+              </div>
+              <p class="install-step-desc">Settings &rarr; Community plugins &rarr; Browse</p>
+              <div class="install-step-arrow">&rarr;</div>
+            </div>
+            <div class="install-step">
+              <div class="install-step-head">
+                <span class="install-step-num">02</span>
+                <h3 class="install-step-title">Search</h3>
+              </div>
+              <p class="install-step-desc">"PO Editor"</p>
+              <div class="install-step-arrow">&rarr;</div>
+            </div>
+            <div class="install-step">
+              <div class="install-step-head">
+                <span class="install-step-num">03</span>
+                <h3 class="install-step-title">Click Install</h3>
+              </div>
+              <p class="install-step-desc">then Enable</p>
+            </div>
+          </div>
+          <div id="install-tab-1" class="tab-panel active">
+            <div class="install-step">
+              <div class="install-step-head">
+                <span class="install-step-num">01</span>
+                <h3 class="install-step-title">Install BRAT</h3>
+              </div>
+              <p class="install-step-desc">from Community plugins</p>
+              <div class="install-step-arrow">&rarr;</div>
+            </div>
+            <div class="install-step">
+              <div class="install-step-head">
+                <span class="install-step-num">02</span>
+                <h3 class="install-step-title">Open BRAT</h3>
+              </div>
+              <p class="install-step-desc">Settings &rarr; Add Beta Plugin</p>
+              <div class="install-step-arrow">&rarr;</div>
+            </div>
+            <div class="install-step">
+              <div class="install-step-head">
+                <span class="install-step-num">03</span>
+                <h3 class="install-step-title">Enter the repo</h3>
+              </div>
+              <p class="install-step-desc-mono">Kodaskills/obsidian-po-editor</p>
+            </div>
+          </div>
+          <div id="install-tab-2" class="tab-panel">
+            <div class="install-step">
+              <div class="install-step-head">
+                <span class="install-step-num">01</span>
+                <h3 class="install-step-title">Download release</h3>
+              </div>
+              <p class="install-step-desc">main.js, manifest.json, styles.css</p>
+              <div class="install-step-arrow">&rarr;</div>
+            </div>
+            <div class="install-step">
+              <div class="install-step-head">
+                <span class="install-step-num">02</span>
+                <h3 class="install-step-title">Copy to plugin folder</h3>
+              </div>
+              <p class="install-step-desc">&lt;vault&gt;/.obsidian/plugins/po-editor/</p>
+              <div class="install-step-arrow">&rarr;</div>
+            </div>
+            <div class="install-step">
+              <div class="install-step-head">
+                <span class="install-step-num">03</span>
+                <h3 class="install-step-title">Reload Obsidian</h3>
+              </div>
+              <p class="install-step-desc">and enable the plugin</p>
+            </div>
+          </div>
+        </section>
+        <section class="section">
+          <span class="label">Roadmap</span>
+          <h2 class="section-title-xl">What's <span class="italic-accent">next.</span></h2>
+          <div class="roadmap">
+            <div class="roadmap-line"></div>
+            <div class="roadmap-item">
+              <div class="roadmap-dot-active"></div>
+              <span class="roadmap-version-active">v0.1</span>
+              <span class="roadmap-status-active">shipped</span>
+              <span class="roadmap-desc"
+                >List view + raw editor, 8 formats, validation, plurals, fuzzy auto-suggest</span
+              >
+            </div>
+            <div class="roadmap-item">
+              <div class="roadmap-dot"></div>
+              <span class="roadmap-version">v0.2</span>
+              <span class="roadmap-status">next</span>
+              <span class="roadmap-desc">Translation memory, glossary</span>
+            </div>
+            <div class="roadmap-item">
+              <div class="roadmap-dot"></div>
+              <span class="roadmap-version">v0.3</span>
+              <span class="roadmap-status">planned</span>
+              <span class="roadmap-desc">LLM-powered drafts, terminology consistency checks</span>
+            </div>
+            <div class="roadmap-item">
+              <div class="roadmap-dot"></div>
+              <span class="roadmap-version">v0.4</span>
+              <span class="roadmap-status">planned</span>
+              <span class="roadmap-desc">Mobile-friendly layout, collaborative editing notes</span>
+            </div>
+          </div>
+        </section>
+        <section id="faq" class="section">
+          <span class="label">FAQ</span>
+          <h2 class="section-title-xl">Things people ask.</h2>
+          <div class="faq-list">
+            <div class="faq-item">
+              <button class="faq-btn" data-faq="0">
+                <span>Does it work on iPad / mobile Obsidian?</span><span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer" data-faq-answer="0">
+                <p class="faq-body">
+                  Not yet &mdash; PO Editor is desktop-only (<code>isDesktopOnly: true</code> in the
+                  manifest). Mobile support is on the roadmap once the core feature set settles.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-btn" data-faq="1">
+                <span>Will it touch files outside my vault?</span><span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer" data-faq-answer="1">
+                <p class="faq-body">
+                  No. Everything happens inside Obsidian, on files in your vault. The plugin reads
+                  and writes PO files (and any conversions) to your chosen output directory.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-btn" data-faq="2">
+                <span>Can I use it with my existing translation workflow?</span
+                ><span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer" data-faq-answer="2">
+                <p class="faq-body">
+                  Yes. Round-trip your PO files to XLIFF for sending to translators, ARB for
+                  Flutter, JSON/YAML/ICU for web, then back to PO. Comments, flags, and references
+                  survive every hop (when configured).
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-btn" data-faq="3">
+                <span>What are obsolete entries and what happens to them?</span
+                ><span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer" data-faq-answer="3">
+                <p class="faq-body">
+                  Obsolete entries are strings no longer in your source but still present in the PO
+                  file. Instead of deleting them, the plugin lets you move them to the obsolete
+                  section &mdash; they're preserved for reference but excluded from active
+                  translation counts.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-btn" data-faq="4">
+                <span>What about plurals &mdash; does it handle CLDR rules?</span
+                ><span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer" data-faq-answer="4">
+                <p class="faq-body">
+                  Yes. msgid_plural with all required forms per language, plus integrity checks that
+                  warn when the count of msgstr[] doesn't match the language's expected plural
+                  categories.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-btn" data-faq="5">
+                <span>Is there a hotkey for everything?</span><span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer" data-faq-answer="5">
+                <p class="faq-body">
+                  Most actions live in the command palette (&#8984;P / Ctrl+P). You can also bind
+                  any editor action via the <code>keyMapping</code> setting &mdash; no restart
+                  needed.
+                </p>
+              </div>
+            </div>
+            <div class="faq-item">
+              <button class="faq-btn" data-faq="6">
+                <span>Can I enter translations one by one without distraction?</span
+                ><span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer" data-faq-answer="6">
+                <p class="faq-body">
+                  Yes &mdash; a focus workflow is built in. Filter the entry list to
+                  <em>untranslated</em> entries, then click the fullscreen button in the editor
+                  panel header to expand it to overlay mode. Type your translation, then press
+                  <kbd>Alt+↓</kbd> to save and jump to the next entry instantly.
+                  <kbd>Alt+↑</kbd> goes back. The command palette also has &ldquo;Navigate to next
+                  untranslated entry&rdquo; if you want keyboard-only flow without touching the
+                  mouse.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="section-alt">
+          <div class="cta-inner">
+            <div class="cta-glow"></div>
+            <h2 class="cta-title">
+              Translate <span class="cta-title-italic">at home,</span><br />in your vault.
+            </h2>
+            <p class="cta-subtitle">Free, MIT-licensed, and crafted with care by Kodaskills.</p>
+            <div class="cta-btn-row">
+              <a href="#install" class="cta-btn-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 2 4 7l3 12 5 3 5-3 3-12-8-5z"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M12 2v9l5 11M12 11l-5-4M12 11l8-4"
+                    stroke="currentColor"
+                    stroke-width="1.2"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                Install in Obsidian</a
+              >
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://github.com/kodaskills/obsidian-po-editor"
+                class="cta-btn-secondary"
+                >&#9733; Star on GitHub</a
+              >
+            </div>
+          </div>
+        </section>
+        <footer class="footer">
+          <div class="footer-brand">
+            <img
+              src="assets/img/logo.svg"
+              alt="PO Editor"
+              class="footer-logo-svg"
+              width="24"
+              height="24"
+            />
+            <span class="footer-brand-text"
+              >PO Editor &middot;
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://kodaskills.com"
+                class="footer-brand-link"
+                >Kodaskills</a
+              ></span
+            >
+          </div>
+          <div class="footer-links">
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://github.com/kodaskills/obsidian-po-editor"
+              class="footer-link"
+              >GitHub</a
+            >
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://obsidian.md/plugins"
+              class="footer-link"
+              >Obsidian</a
+            >
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://github.com/kodaskills/obsidian-po-editor/issues"
+              class="footer-link"
+              >Issues</a
+            >
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://github.com/kodaskills/obsidian-po-editor/blob/main/LICENSE"
+              class="footer-link"
+              >MIT</a
+            >
+          </div>
+        </footer>
+      </div>
+    </div>
+    <script src="assets/js/site.js"></script>
+  </body>
+</html>
