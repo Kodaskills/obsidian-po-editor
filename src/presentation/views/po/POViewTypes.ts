@@ -91,6 +91,7 @@ export interface POViewSnapshot {
   editorPanelPosition: EditorPanelPosition;
   editorPanelHeightPercent: number;
   quickActions: CustomAction[];
+  sourceEditable: boolean;
 }
 
 export interface POViewQueries {

@@ -362,6 +362,7 @@ export class POView extends TextFileView implements POViewQueries, POViewActions
       editorPanelPosition: this.plugin.settings.editorPanelPosition,
       editorPanelHeightPercent: this.editorPanelHeightPercent,
       quickActions: this.plugin.settings.quickActions,
+      sourceEditable: this.plugin.settings.sourceEditable,
     };
   }
 

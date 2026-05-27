@@ -38,6 +38,7 @@ type Actions = POEntryActions &
 export class POEditorPanelRenderer {
   private readonly pluralFormsEditor: PluralFormsEditor;
   private readonly translationTextarea: TranslationTextarea;
+  private sourceEditable = true;
 
   constructor(
     private readonly queries: POViewQueries,
@@ -56,6 +57,7 @@ export class POEditorPanelRenderer {
     }
 
     const snapshot = this.queries.getSnapshot();
+    this.sourceEditable = snapshot.sourceEditable;
     const filteredEntries = this.queries.getFilteredEntries();
     const index = filteredEntries.findIndex((e) => entriesMatch(e, entry));
 
@@ -125,8 +127,8 @@ export class POEditorPanelRenderer {
         cls: "po-editor-plural-msgid",
         text: entry.msgidPlural,
       });
-      setTooltip(pluralMsgidEl, "Double-click to edit");
-      makeInlineEditable(pluralMsgidEl, entry, "msgid_plural", this.actions);
+      if (this.sourceEditable) setTooltip(pluralMsgidEl, "Double-click to edit");
+      makeInlineEditable(pluralMsgidEl, entry, "msgid_plural", this.actions, this.sourceEditable);
       if (!entry.msgidPlural) {
         pluralMsgidEl.contentEditable = "true";
         pluralHeader.createDiv({
@@ -268,8 +270,8 @@ export class POEditorPanelRenderer {
     const sourceMeta = sourceCol.createDiv({ cls: "po-editor-source-key-row" });
     sourceMeta.createSpan({ cls: "po-editor-source-key-label", text: "msgid" });
     const msgidEl = sourceMeta.createSpan({ cls: "po-editor-source-key-value", text: entry.msgid });
-    setTooltip(msgidEl, "Double-click to edit");
-    makeInlineEditable(msgidEl, entry, "msgid", this.actions);
+    if (this.sourceEditable) setTooltip(msgidEl, "Double-click to edit");
+    makeInlineEditable(msgidEl, entry, "msgid", this.actions, this.sourceEditable);
     if (isNewEntry) {
       msgidEl.contentEditable = "true";
       window.requestAnimationFrame(() => {
@@ -439,8 +441,8 @@ export class POEditorPanelRenderer {
 
     if (entry.msgctxt) {
       const chip = meta.createSpan({ cls: "po-editor-source-key-chip", text: entry.msgctxt });
-      setTooltip(chip, "Double-click to edit context");
-      makeInlineEditable(chip, entry, "msgctxt", this.actions);
+      if (this.sourceEditable) setTooltip(chip, "Double-click to edit context");
+      makeInlineEditable(chip, entry, "msgctxt", this.actions, this.sourceEditable);
     } else {
       const setupAddBtn = () => {
         const btn = meta.createDiv({ cls: "po-editor-add-context-btn" });
@@ -500,8 +502,8 @@ export class POEditorPanelRenderer {
     const section = container.createDiv({ cls: "po-editor-entry-id-section" });
     section.createDiv({ cls: "po-editor-section-label", text: "msgid" });
     const msgidEl = section.createDiv({ cls: "po-editor-entry-id-value", text: entry.msgid });
-    setTooltip(msgidEl, "Double-click to edit");
-    makeInlineEditable(msgidEl, entry, "msgid", this.actions);
+    if (this.sourceEditable) setTooltip(msgidEl, "Double-click to edit");
+    makeInlineEditable(msgidEl, entry, "msgid", this.actions, this.sourceEditable);
     const isPlaceholder = entry.msgid === NEW_ENTRY_PLACEHOLDER;
     if (isPlaceholder) {
       msgidEl.contentEditable = "true";
@@ -560,12 +562,12 @@ export class POEditorPanelRenderer {
         cls: "po-editor-source-msgid-value",
         text: entry.msgid,
       });
-      setTooltip(msgidEl, "Double-click to edit");
-      makeInlineEditable(msgidEl, entry, "msgid", this.actions);
+      if (this.sourceEditable) setTooltip(msgidEl, "Double-click to edit");
+      makeInlineEditable(msgidEl, entry, "msgid", this.actions, this.sourceEditable);
     } else {
       const msgidEl = section.createDiv({ cls: "po-editor-source-body", text: entry.msgid });
-      setTooltip(msgidEl, "Double-click to edit");
-      makeInlineEditable(msgidEl, entry, "msgid", this.actions);
+      if (this.sourceEditable) setTooltip(msgidEl, "Double-click to edit");
+      makeInlineEditable(msgidEl, entry, "msgid", this.actions, this.sourceEditable);
     }
 
     if (entry.comments?.extracted) {

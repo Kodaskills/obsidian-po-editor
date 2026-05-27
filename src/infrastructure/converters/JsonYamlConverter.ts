@@ -1,6 +1,6 @@
 import { type TranslationConverter } from "@application/index";
 import { createPOHeader, createSingularEntry, type POEntry, type POFile } from "@domain/index";
-import yaml from "js-yaml";
+import { parse as yamlParse, stringify as yamlStringify } from "yaml";
 
 export class JsonYamlBaseConverter implements TranslationConverter {
   readonly format: "json" | "yaml";
@@ -19,7 +19,7 @@ export class JsonYamlBaseConverter implements TranslationConverter {
     let data: Record<string, unknown>;
 
     if (this.format === "yaml") {
-      data = yaml.load(content) as Record<string, unknown>;
+      data = yamlParse(content) as Record<string, unknown>;
     } else {
       data = JSON.parse(content) as Record<string, unknown>;
     }
@@ -69,10 +69,9 @@ export class JsonYamlBaseConverter implements TranslationConverter {
     const data = this.buildObject(poFile.entries);
 
     if (this.format === "yaml") {
-      return yaml.dump(data, {
+      return yamlStringify(data, null, {
         indent: 2,
-        lineWidth: -1,
-        noRefs: true,
+        lineWidth: 0,
       });
     }
 

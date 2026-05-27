@@ -12,6 +12,8 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
+  attestations: write
 
 jobs:
   # ── Open / update release PR, create tag + GitHub Release on merge ────────
@@ -54,6 +56,13 @@ jobs:
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || needs.release-please.outputs.tag_name }}
           files: |
-            main.js
+            dist/main.js
             manifest.json
+            styles.css
+
+      - name: Attest release assets
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: |
+            dist/main.js
             styles.css

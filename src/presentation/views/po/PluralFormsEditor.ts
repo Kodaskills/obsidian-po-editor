@@ -72,8 +72,8 @@ export class PluralFormsEditor {
       cls: "po-editor-plural-msgid",
       text: entry.msgidPlural,
     });
-    setTooltip(pluralMsgidEl, "Double-click to edit");
-    makeInlineEditable(pluralMsgidEl, entry, "msgid_plural", this.actions);
+    if (snapshot.sourceEditable) setTooltip(pluralMsgidEl, "Double-click to edit");
+    makeInlineEditable(pluralMsgidEl, entry, "msgid_plural", this.actions, snapshot.sourceEditable);
     if (!entry.msgidPlural) {
       pluralMsgidEl.contentEditable = "true";
       pluralHeader.createDiv({

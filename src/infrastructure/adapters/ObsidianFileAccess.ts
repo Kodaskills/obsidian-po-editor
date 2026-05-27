@@ -1,6 +1,6 @@
 import { type FileReader, type FileWriter } from "@application/index";
 import { type FileRef } from "@application/index";
-import { type App, TFile } from "obsidian";
+import { type App, TAbstractFile, TFile, TFolder } from "obsidian";
 
 export class ObsidianFileAccess implements FileReader, FileWriter {
   constructor(private app: App) {}
@@ -40,13 +40,19 @@ export class ObsidianFileAccess implements FileReader, FileWriter {
 
   async findByExtension(extension: string, folderPath: string): Promise<FileRef[]> {
     const ext = extension.startsWith(".") ? extension.slice(1) : extension;
-    const prefix = folderPath.endsWith("/") ? folderPath : `${folderPath}/`;
-    const allFiles = this.app.vault.getAllLoadedFiles();
-    return allFiles
-      .filter(
-        (f): f is TFile => f instanceof TFile && f.extension === ext && f.path.startsWith(prefix),
-      )
-      .map((f) => ({ path: f.path, name: f.name, extension: f.extension }));
+    const folder = this.app.vault.getFolderByPath(folderPath);
+    if (!folder) return [];
+
+    const results: FileRef[] = [];
+    const collect = (node: TAbstractFile) => {
+      if (node instanceof TFile) {
+        if (node.extension === ext) results.push(this.toFileRef(node));
+      } else if (node instanceof TFolder) {
+        for (const child of node.children) collect(child);
+      }
+    };
+    collect(folder);
+    return results;
   }
 
   async getFileByPath(path: string): Promise<FileRef | null> {

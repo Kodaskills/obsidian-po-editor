@@ -468,6 +468,7 @@ export class POStatsView extends ItemView implements IPOStatsPanel {
           attr: { type: "checkbox" },
         });
         cb.checked = includedValues.includes(value);
+        row.classList.toggle("po-filter-row--active", cb.checked);
 
         if (renderLabel) {
           renderLabel(row);
@@ -479,6 +480,7 @@ export class POStatsView extends ItemView implements IPOStatsPanel {
 
         const toggle = () => {
           cb.checked = !cb.checked;
+          row.classList.toggle("po-filter-row--active", cb.checked);
           const newIncluded = cb.checked
             ? [...includedValues, value]
             : includedValues.filter((v) => v !== value);
@@ -491,6 +493,7 @@ export class POStatsView extends ItemView implements IPOStatsPanel {
         };
         cb.onchange = (e) => {
           e.stopPropagation();
+          row.classList.toggle("po-filter-row--active", cb.checked);
           const newIncluded = cb.checked
             ? [...includedValues, value]
             : includedValues.filter((v) => v !== value);

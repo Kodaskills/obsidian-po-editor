@@ -47,7 +47,9 @@ export function makeInlineEditable(
   entry: POEntry,
   field: "msgid" | "msgid_plural" | "msgctxt",
   actions: POEntryActions,
+  editable = true,
 ): void {
+  if (!editable) return;
   const originalValue =
     field === "msgid"
       ? entry.msgid

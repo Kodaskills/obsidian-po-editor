@@ -120,18 +120,16 @@ export class POSettingsTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("Editable PO source")
+      .setName("Editable source text")
       .setDesc(
-        "Allow editing the raw PO source in text mode. When disabled, the source view is read-only.",
+        "Allow double-click editing of msgid, msgctxt, and msgid_plural fields. When disabled, source fields are read-only.",
       )
       .addToggle((toggle) =>
         toggle.setValue(this.plugin.settings.sourceEditable).onChange(async (value) => {
           this.plugin.settings.sourceEditable = value;
           await this.plugin.saveSettings();
           this.plugin.app.workspace.getLeavesOfType("po-view").forEach((leaf) => {
-            if (leaf.view instanceof POView && leaf.view.currentEditorMode === "text") {
-              leaf.view.render();
-            }
+            if (leaf.view instanceof POView) leaf.view.render();
           });
         }),
       );

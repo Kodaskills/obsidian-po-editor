@@ -600,9 +600,9 @@ input[type="radio"],
   opacity: 0.6;
 }
 
-.po-list-row--selected {
+.po-list-row.po-list-row--selected {
   background: color-mix(in srgb, var(--interactive-accent) 18%, transparent);
-  border-left-color: var(--interactive-accent) !important;
+  border-left-color: var(--interactive-accent);
 }
 
 .po-list-placeholder-warn {
@@ -1283,15 +1283,13 @@ input[type="radio"],
   width: var(--size-4-16);
 }
 
-.po-editor-resizing,
-.po-editor-resizing * {
-  cursor: ns-resize !important;
-  user-select: none !important;
+body.po-editor-resizing {
+  cursor: ns-resize;
+  user-select: none;
 }
 
-.po-editor-resizing--horizontal,
-.po-editor-resizing--horizontal * {
-  cursor: ew-resize !important;
+body.po-editor-resizing--horizontal {
+  cursor: ew-resize;
 }
 
 /* Split panel state modifiers */
@@ -1871,12 +1869,12 @@ input[type="radio"],
 }
 
 .po-editor-delete-btn {
-  color: var(--text-error) !important;
+  color: var(--text-error);
 }
 
 .po-editor-delete-btn:hover {
-  color: var(--text-on-accent) !important;
-  background: var(--text-error) !important;
+  color: var(--text-on-accent);
+  background: var(--text-error);
 }
 
 .po-editor-save-button {
@@ -2459,7 +2457,9 @@ input[type="radio"],
   font-size: var(--font-ui-smaller);
   opacity: 0;
   transform: scale(0.5);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .po-export-card-selected .po-export-card-check {
@@ -2498,7 +2498,9 @@ input[type="radio"],
   border-radius: var(--radius-s);
   font-family: var(--font-monospace);
   letter-spacing: 0.3px;
-  transition: all 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
   margin-top: var(--size-2-1);
 }
 
@@ -2659,7 +2661,7 @@ input[type="radio"],
 
 /* ── Shared utilities ── */
 .po-hidden {
-  display: none !important;
+  display: none;
 }
 
 /* ── Status bar ── */
@@ -3436,7 +3438,7 @@ input[type="radio"],
 }
 
 /* Filter row highlight when active */
-.po-filter-row:has(input:checked) {
+.po-filter-row--active {
   background: var(--background-modifier-active-hover);
   border-radius: var(--radius-s);
 }

@@ -3,7 +3,7 @@
   "name": "PO Editor",
   "version": "0.1.0",
   "minAppVersion": "1.10.0",
-  "description": "Editing PO (Gettext) translation files with format conversion support (ICU, XLIFF, ARB, JSON, YAML)",
+  "description": "Editing PO (Gettext) translation files with format conversion support (ICU, XLIFF, ARB, JSON, YAML).",
   "author": "Kodaskills",
   "authorUrl": "https://kodaskills.co",
   "fundingUrl": "https://github.com/sponsors/Kodaskills",
