@@ -40,7 +40,7 @@
       <header class="nav-sticky">
         <div class="container">
           <nav class="nav">
-            <a href="#" class="nav-logo">
+            <a href="#" class="nav-logo" data-analytics="po_editor_logo">
               <img
                 src="assets/img/logo.svg"
                 alt="PO Editor"
@@ -51,14 +51,15 @@
               <span class="logo-name">PO Editor</span>
             </a>
             <div class="nav-links">
-              <a href="#features" class="link-nav">Features</a>
-              <a href="#install" class="link-nav">Install</a>
-              <a href="#faq" class="link-nav">FAQ</a>
+              <a href="#features" class="link-nav" data-analytics="features">Features</a>
+              <a href="#install" class="link-nav" data-analytics="install">Install</a>
+              <a href="#faq" class="link-nav" data-analytics="faq">FAQ</a>
               <a
                 target="_blank"
                 rel="noopener noreferrer"
                 href="https://github.com/kodaskills/obsidian-po-editor"
                 class="link-nav nav-github-btn"
+                data-analytics="github_button"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                   <path
@@ -68,7 +69,7 @@
                 GitHub</a
               >
               <div class="theme-switcher" role="group" aria-label="Color theme">
-                <button class="theme-btn active" data-theme-btn="dark" title="Dark">
+                <button class="theme-btn active" data-theme-btn="dark" title="Dark" data-analytics="theme_toggle">
                   <svg
                     width="13"
                     height="13"
@@ -79,7 +80,7 @@
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
                   </svg>
                 </button>
-                <button class="theme-btn" data-theme-btn="system" title="System">
+                <button class="theme-btn" data-theme-btn="system" title="System" data-analytics="theme_toggle">
                   <svg
                     width="13"
                     height="13"
@@ -96,7 +97,7 @@
                     />
                   </svg>
                 </button>
-                <button class="theme-btn" data-theme-btn="light" title="Light">
+                <button class="theme-btn" data-theme-btn="light" title="Light" data-analytics="theme_toggle">
                   <svg
                     width="14"
                     height="14"
@@ -140,7 +141,7 @@
             YAML, or ICU &mdash; all from a vault you already know.
           </p>
           <div class="hero-cta-row">
-            <a href="#install" class="hero-btn btn-primary">
+            <a href="#install" class="hero-btn btn-primary" data-analytics="install_in_obsidian">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                 <path
                   d="M12 2 4 7l3 12 5 3 5-3 3-12-8-5z"
@@ -162,7 +163,7 @@
               rel="noopener noreferrer"
               href="https://github.com/kodaskills/obsidian-po-editor"
               class="btn-secondary"
-              >View on GitHub &rarr;</a
+              data-analytics="view_on_github">View on GitHub &rarr;</a
             >
           </div>
           <div id="v1-hero-content" class="hero-visual">
@@ -349,7 +350,7 @@
             <span class="marquee-item"><span class="marquee-bullet">&#10022;</span>TypeScript</span>
           </div>
         </section>
-        <section id="features" class="section">
+        <section id="features" class="section" data-analytics-section="features_section">
           <div class="section-header">
             <span class="label">What's inside</span>
             <h2 class="section-title">
@@ -662,12 +663,12 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 class="btn-feat-request"
-                >Request a feature &rarr;</a
+                data-analytics="feature_request">Request a feature &rarr;</a
               >
             </div>
           </div>
         </section>
-        <section id="ui-showcase" class="section">
+        <section id="ui-showcase" class="section" data-analytics-section="in_action_section">
           <div class="section-header">
             <span class="label">In action</span>
             <h2 class="section-title">
@@ -821,7 +822,7 @@
             </div>
           </div>
         </section>
-        <section class="section-alt">
+        <section class="section-alt" data-analytics-section="shape_po_section">
           <div class="two-col">
             <div>
               <span class="label">The shape of a PO file</span>
@@ -869,7 +870,7 @@ msgid </span><span class="code-string-yellow">"Could not connect to %s"</span><s
 msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible"</span></pre>
           </div>
         </section>
-        <section class="section">
+        <section class="section" data-analytics-section="how_it_works_section">
           <div class="steps-header">
             <span class="label">How it works</span>
             <h2 class="section-title-lg">
@@ -916,7 +917,7 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
             </div>
           </div>
         </section>
-        <section class="section">
+        <section class="section" data-analytics-section="formats_section">
           <div class="formats-layout">
             <div>
               <span class="label">Formats</span>
@@ -988,21 +989,21 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
             </div>
           </div>
         </section>
-        <section id="install" class="section">
+        <section id="install" class="section" data-analytics-section="installation_section">
           <div class="install-header">
             <span class="label">Installation</span>
             <h2 class="section-title-lg">Three ways in.</h2>
             <p class="install-meta">Desktop only &middot; Obsidian 0.15.0+</p>
           </div>
           <div class="tab-bar" id="install-tab-bar">
-            <button class="tab-btn" data-tab="0">
+            <button class="tab-btn" data-tab="0" data-analytics="community_plugins">
               <span>Community Plugins <span class="badge-soon">coming soon</span></span
               ><span class="tab-label">not yet listed</span>
             </button>
-            <button class="tab-btn active" data-tab="1">
+            <button class="tab-btn active" data-tab="1" data-analytics="brat_install">
               <span>BRAT (beta)</span><span class="tab-label">available now</span>
             </button>
-            <button class="tab-btn" data-tab="2">
+            <button class="tab-btn" data-tab="2" data-analytics="manual_install">
               <span>Manual</span><span class="tab-label">for the curious</span>
             </button>
           </div>
@@ -1082,7 +1083,7 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
             </div>
           </div>
         </section>
-        <section class="section">
+        <section class="section" data-analytics-section="roadmap_section">
           <span class="label">Roadmap</span>
           <h2 class="section-title-xl">What's <span class="italic-accent">next.</span></h2>
           <div class="roadmap">
@@ -1115,12 +1116,12 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
             </div>
           </div>
         </section>
-        <section id="faq" class="section">
+        <section id="faq" class="section" data-analytics-section="faq_section">
           <span class="label">FAQ</span>
           <h2 class="section-title-xl">Things people ask.</h2>
           <div class="faq-list">
             <div class="faq-item">
-              <button class="faq-btn" data-faq="0">
+              <button class="faq-btn" data-faq="0" data-analytics="obsidian_mobile">
                 <span>Does it work on iPad / mobile Obsidian?</span><span class="faq-icon">+</span>
               </button>
               <div class="faq-answer" data-faq-answer="0">
@@ -1131,7 +1132,7 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
               </div>
             </div>
             <div class="faq-item">
-              <button class="faq-btn" data-faq="1">
+              <button class="faq-btn" data-faq="1" data-analytics="files_outside_vault">
                 <span>Will it touch files outside my vault?</span><span class="faq-icon">+</span>
               </button>
               <div class="faq-answer" data-faq-answer="1">
@@ -1142,7 +1143,7 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
               </div>
             </div>
             <div class="faq-item">
-              <button class="faq-btn" data-faq="2">
+              <button class="faq-btn" data-faq="2" data-analytics="existing_translation_workflow">
                 <span>Can I use it with my existing translation workflow?</span
                 ><span class="faq-icon">+</span>
               </button>
@@ -1155,7 +1156,7 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
               </div>
             </div>
             <div class="faq-item">
-              <button class="faq-btn" data-faq="3">
+              <button class="faq-btn" data-faq="3" data-analytics="obsolete_entries">
                 <span>What are obsolete entries and what happens to them?</span
                 ><span class="faq-icon">+</span>
               </button>
@@ -1169,7 +1170,7 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
               </div>
             </div>
             <div class="faq-item">
-              <button class="faq-btn" data-faq="4">
+              <button class="faq-btn" data-faq="4" data-analytics="plurals_cldr">
                 <span>What about plurals &mdash; does it handle CLDR rules?</span
                 ><span class="faq-icon">+</span>
               </button>
@@ -1182,7 +1183,7 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
               </div>
             </div>
             <div class="faq-item">
-              <button class="faq-btn" data-faq="5">
+              <button class="faq-btn" data-faq="5" data-analytics="hotkeys">
                 <span>Is there a hotkey for everything?</span><span class="faq-icon">+</span>
               </button>
               <div class="faq-answer" data-faq-answer="5">
@@ -1194,7 +1195,7 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
               </div>
             </div>
             <div class="faq-item">
-              <button class="faq-btn" data-faq="6">
+              <button class="faq-btn" data-faq="6" data-analytics="focused_translations">
                 <span>Can I enter translations one by one without distraction?</span
                 ><span class="faq-icon">+</span>
               </button>
@@ -1220,7 +1221,7 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
             </h2>
             <p class="cta-subtitle">Free, MIT-licensed, and crafted with care by Kodaskills.</p>
             <div class="cta-btn-row">
-              <a href="#install" class="cta-btn-primary">
+              <a href="#install" class="cta-btn-primary" data-analytics="install_in_obsidian_end">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                   <path
                     d="M12 2 4 7l3 12 5 3 5-3 3-12-8-5z"
@@ -1242,7 +1243,7 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
                 rel="noopener noreferrer"
                 href="https://github.com/kodaskills/obsidian-po-editor"
                 class="cta-btn-secondary"
-                >&#9733; Star on GitHub</a
+                data-analytics="star_github">&#9733; Star on GitHub</a
               >
             </div>
           </div>
@@ -1263,7 +1264,7 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
                 rel="noopener noreferrer"
                 href="https://kodaskills.com"
                 class="footer-brand-link"
-                >Kodaskills</a
+                data-analytics="kodaskills_link">Kodaskills</a
               ></span
             >
           </div>
@@ -1273,33 +1274,34 @@ msgstr </span><span class="code-string-yellow">"Connexion &agrave; %s impossible
               rel="noopener noreferrer"
               href="https://github.com/kodaskills/obsidian-po-editor"
               class="footer-link"
-              >GitHub</a
+              data-analytics="github">GitHub</a
             >
             <a
               target="_blank"
               rel="noopener noreferrer"
               href="https://obsidian.md/plugins"
               class="footer-link"
-              >Obsidian</a
+              data-analytics="obsidian">Obsidian</a
             >
             <a
               target="_blank"
               rel="noopener noreferrer"
               href="https://github.com/kodaskills/obsidian-po-editor/issues"
               class="footer-link"
-              >Issues</a
+              data-analytics="issues">Issues</a
             >
             <a
               target="_blank"
               rel="noopener noreferrer"
               href="https://github.com/kodaskills/obsidian-po-editor/blob/main/LICENSE"
               class="footer-link"
-              >MIT</a
+              data-analytics="mit">MIT</a
             >
           </div>
         </footer>
       </div>
     </div>
     <script src="assets/js/site.js"></script>
+    <script src="assets/js/analytics.js"></script>
   </body>
 </html>
